@@ -1,9 +1,14 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.template import loader
 import json
 import os, os.path
 
 #Acquire contents of files in jsons files directory
 def acquirefiles():
-    path = r'save files'
+    filedirectory = os.path.dirname(os.path.abspath(__file__))
+    folderpath = r'save files'
+    path = os.path.join(filedirectory, folderpath)
     saveslist = {}
     #Iterate through files in save files folder
     for files in os.listdir(path):
@@ -25,8 +30,49 @@ def displayfiles(saveslist):
     print("\n")
     pass
 
+#Check if username already exists
+def userexists(saveslist, username):
+    valid = True
+    for saves in saveslist.values():
+        if (saves["Username"] == username):
+            valid = False
+            break
+    return valid
 
-#Create a new file
+#Add save
+def makenewfile(saveslist, username):
+    #Use highest existing number for save to ensure no duplicate save files
+    highest = 0
+    for names in saveslist:
+        trunc = names[4:-5]
+        if (int(trunc) > highest):
+            highest = int(trunc)
+    highest = highest + 1
+    newfilename = "save " + str(highest) + ".json"
+    newcontents = {
+        "Username": username,
+        "Level": 1,
+        "Coins": 100000,
+        "Jewels": 500,
+        "Inventory": {},
+        "Inventory Max Size": 10
+    }
+    #Update new saves list
+    newsaveslist = saveslist
+    newsaveslist[newfilename] = newcontents
+    
+    #Create new file in folder
+    newfile = json.dumps(newcontents, indent = 2)
+    filedirectory = os.path.dirname(os.path.abspath(__file__))
+    folderpath = r'save files/'
+    path = os.path.join(filedirectory, folderpath)
+    newpath = path + newfilename
+    with open(newpath, "w") as file:
+        file.write(newfile)
+    
+    return newsaveslist
+
+#Create a new file (For manual version without incorporating django & html)
 def createnewfile(saveslist):
     #Set maximum saves allowed to 5
     if (len(saveslist) > 4):
@@ -71,7 +117,9 @@ def createnewfile(saveslist):
         
         #Create new file in folder
         newfile = json.dumps(newcontents, indent = 2)
-        path = r'save files/'
+        filedirectory = os.path.dirname(os.path.abspath(__file__))
+        folderpath = r'save files/'
+        path = os.path.join(filedirectory, folderpath)
         newpath = path + newfilename
         with open(newpath, "w") as file:
             file.write(newfile)
@@ -87,7 +135,9 @@ def deletefile(saveslist):
         print("\n")
         return saveslist
     else:
-        path = r'save files/'
+        filedirectory = os.path.dirname(os.path.abspath(__file__))
+        folderpath = r'save files/'
+        path = os.path.join(filedirectory, folderpath)
         newsaveslist = saveslist
         displayfiles(saveslist)
         finish = False
@@ -151,4 +201,4 @@ def filemenu():
     pass
 
 #Summon menu
-filemenu()
+#filemenu()

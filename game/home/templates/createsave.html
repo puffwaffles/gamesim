@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Load Saves</title>
+    <link rel="stylesheet" href = "{% static 'menu.css' %}">
+</head>
+<body>
+    {% if saveslist|length > 4 %}
+    <p>Maximum number of saves exceeded!</p>
+    {% else %}
+    <p>You can begin creating a new save</p>
+    <form action = "{% url 'createsave' %}" method = "POST">
+        {% csrf_token %}
+        <p>Username: 
+        <input type="text" name = "Username" value="">
+        <button type="submit" value="Enter">Enter</button>
+        </p>
+    </form>
+    {% endif %}
+    {% if create %}
+    <p>New user {{user}} successfully created!</p> 
+    {% endif %}
+    {% if error %}
+    <p>Sorry, username {{user}} is already taken. Please try another username.</p> 
+    {% endif %}
+    <form action = "{% url 'home' %}" method = "Get">
+        {% csrf_token %}<button class = "menu_button"  type = "submit"><h1>Back To Menu</h1></button>
+    </form>
+</body>
+</html>
