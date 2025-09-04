@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Home</title>
+    <link rel="stylesheet" href = "{% static 'game.css' %}">
+</head>
+<body>
+    <ul class = "panel">
+        <li class = "panelparts">{{username}}</li>
+        <li class = "panelparts">Level: {{level}}</li>
+        <li class = "panelparts">Coins: {{coins}}</li>
+        <li class = "panelparts">Jewels: {{jewels}}</li>
+    </ul>
+
+    <ul class = "menu">
+        <li class = "bar"><a href= "{% url 'home' %}">Back To Menu</a></li>
+        <li class = "bar"><a href= "{% url 'savetemp' %}">Save File</a></li>
+        <li class = "bar"><a href= "{% url 'addjewels' %}">Add Jewels</a></li>
+    </ul>
+</body>

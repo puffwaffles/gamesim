@@ -1,0 +1,57 @@
+body {
+    background-color: #ff3300;
+    margin: 0;
+    padding: 0;
+}
+
+.panel {
+    list-style-type: none;
+    margin: 0;
+	padding: 0;
+    left: 0;
+    overflow: flex;
+    background-color: brown;
+}
+
+.panelparts {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    border: 1px brown solid;
+    padding: 30px;
+}
+
+.menu {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+    left: 0;
+	width: 15%;
+	height: 100%;
+	position: fixed;
+	overflow: auto;
+}
+
+.active {
+	background-color: purple;
+}
+
+.bar:hover:not(.active) {
+	background-color: #0033cc;
+    cursor: pointer;
+}
+
+.bar {
+	display: block;
+	text-decoration: none;
+	text-align: center;
+	font-size: 18pt;
+    color: #3399ff;
+}
+
+.bar a {
+	display: block;
+	padding: 10px 10px;
+	text-decoration: none;
+	color: white;
+}
