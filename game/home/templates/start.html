@@ -13,7 +13,8 @@
     <form action = "{% url 'createsave' %}" method = "GET">
         {% csrf_token %}<button class = "menu_button"><h1>Create New Save</h1></button>
     </form>
-    
-    <button class = "menu_button"><h1>Delete A Save</h1></button>
+    <form action = "{% url 'deletesave' %}" method = "GET">
+        <button class = "menu_button"><h1>Delete A Save</h1></button>
+    </form>
 </body>
 </html>

@@ -4,11 +4,24 @@ from django.template import loader
 import json
 import os, os.path
 
+#Generates path for folder
+def getfolderpath(folder):
+    filedirectory = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(filedirectory, folder)
+    return path
+
+#Grabs contents of given file (excluding extension) from folder
+def getfile(filename, folder):
+    path = getfolderpath(folder)
+    newpath = path + filename + '.json'
+    contents = {}
+    with open(newpath, "r")  as file: 
+        contents = json.load(file)
+    return contents
+
 #Acquire contents of files in jsons files directory
 def acquirefiles():
-    filedirectory = os.path.dirname(os.path.abspath(__file__))
-    folderpath = r'save files'
-    path = os.path.join(filedirectory, folderpath)
+    path = getfolderpath(r'save files/')
     saveslist = {}
     #Iterate through files in save files folder
     for files in os.listdir(path):
@@ -19,7 +32,17 @@ def acquirefiles():
                 saveslist[files] = json.load(file)
     return saveslist
 
-# Displays save files (excluding file extension)
+#Returns sorted list of save files
+def filessorted(saveslist):
+    saveslistkeys = saveslist.keys()
+    savenames = []
+
+    for saves in saveslistkeys:
+        savenames.append(saves[:-5])
+    savenames.sort()
+    return savenames
+
+# Displays save files (excluding file extension and for terminal output)
 def displayfiles(saveslist):
     if (len(saveslist) == 0):
         print("No existing save files") 
@@ -38,6 +61,13 @@ def userexists(saveslist, username):
             valid = False
             break
     return valid
+
+#Overwrites file given contents and filepath
+def replacefile(contents, path):
+    newfile = json.dumps(contents, indent = 2)
+    with open(path, "w") as file:
+        file.write(newfile)
+    return contents
 
 #Add save
 def makenewfile(saveslist, username):
@@ -62,15 +92,45 @@ def makenewfile(saveslist, username):
     newsaveslist[newfilename] = newcontents
     
     #Create new file in folder
-    newfile = json.dumps(newcontents, indent = 2)
-    filedirectory = os.path.dirname(os.path.abspath(__file__))
-    folderpath = r'save files/'
-    path = os.path.join(filedirectory, folderpath)
+    path = getfolderpath(r'save files/')
     newpath = path + newfilename
-    with open(newpath, "w") as file:
-        file.write(newfile)
+    newfile = replacefile(newcontents, newpath)
     
     return newsaveslist
+
+#Update temp file with new contents. Returns contents of temp file (Actual contents is tempcontents["Contents"])
+def updatetemp(savename, newcontents):
+    tempcontents = {
+        "Save Name": savename,
+        "Contents": newcontents
+    }
+
+    path = getfolderpath(r'temp file/')
+    newpath = path + 'temp.json'
+
+    tempcontents = replacefile(tempcontents, newpath)
+    
+    return tempcontents
+
+#Update save file with temp's contents
+def updatesave(tempcontents):
+    path = getfolderpath(r'save files/')
+    newpath = path + tempcontents["Save Name"] + '.json'
+
+    tempcontents = replacefile(tempcontents["Contents"], newpath)
+
+    return tempcontents
+
+#Erases contents of temp file when going back to the home screen
+def cleartemp():
+    tempcontents = {}
+
+    path = getfolderpath(r'temp file/')
+    newpath = path + 'temp.json'
+
+    tempcontents = replacefile(tempcontents, newpath)
+    
+    return tempcontents
 
 #Create a new file (For manual version without incorporating django & html)
 def createnewfile(saveslist):
@@ -116,16 +176,26 @@ def createnewfile(saveslist):
         newsaveslist[newfilename] = newcontents
         
         #Create new file in folder
-        newfile = json.dumps(newcontents, indent = 2)
-        filedirectory = os.path.dirname(os.path.abspath(__file__))
-        folderpath = r'save files/'
-        path = os.path.join(filedirectory, folderpath)
+        path = getfolderpath(r'save files/')
         newpath = path + newfilename
-        with open(newpath, "w") as file:
-            file.write(newfile)
+
+        newfile = replacefile(newcontents, newpath)
+
         displayfiles(newsaveslist)
         return newsaveslist
-    
+
+#Directly removes file given save name
+def removeoldfile(saveslist, savename):
+    path = getfolderpath(r'save files/')
+    path = os.path.join(path, savename + ".json")
+    #Update saveslist by removing file entry
+    newsaveslist = saveslist
+    del newsaveslist[savename + ".json"]
+    #Remove save file from folder
+    os.remove(path)
+    return newsaveslist
+
+
 #Deletes save files
 def deletefile(saveslist):
     numsaves = len(saveslist)
@@ -135,9 +205,7 @@ def deletefile(saveslist):
         print("\n")
         return saveslist
     else:
-        filedirectory = os.path.dirname(os.path.abspath(__file__))
-        folderpath = r'save files/'
-        path = os.path.join(filedirectory, folderpath)
+        path = getfolderpath(r'save files/')
         newsaveslist = saveslist
         displayfiles(saveslist)
         finish = False

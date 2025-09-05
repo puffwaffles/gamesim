@@ -26,32 +26,34 @@ body {
 	margin: 0;
 	padding: 0;
     left: 0;
-	width: 15%;
-	height: 100%;
+	width: 20%;
 	position: fixed;
-	overflow: auto;
+    background-color: #3399ff;
+    color: white;
 }
 
-.active {
-	background-color: purple;
+.bar, .bar:link, .bar:visited {
+	display: block;
+	text-decoration: none;
+    color: white;
+	text-align: center;
+	font-size: 18pt;
+    width: 100%;
+    padding: 30px;
+    background-color: #3399ff;
 }
 
-.bar:hover:not(.active) {
+.bar:hover {
 	background-color: #0033cc;
     cursor: pointer;
 }
 
-.bar {
-	display: block;
+button.bar {
+    display: block;
 	text-decoration: none;
 	text-align: center;
 	font-size: 18pt;
-    color: #3399ff;
-}
-
-.bar a {
-	display: block;
-	padding: 10px 10px;
-	text-decoration: none;
-	color: white;
+    background-color: #3399ff;
+    width: 100%;
+    padding: 30px;
 }

@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Load Saves</title>
+    <title>Create Saves</title>
     <link rel="stylesheet" href = "{% static 'menu.css' %}">
 </head>
 <body>
-    {% if saveslist|length > 4 %}
-    <p>Maximum number of saves exceeded!</p>
+    {% if saves|length > 4 %}
+    <h1>Maximum number of saves exceeded!</h1>
     {% else %}
-    <p>You can begin creating a new save</p>
+    <h1>You can begin creating a new save</h1>
     <form action = "{% url 'createsave' %}" method = "POST">
         {% csrf_token %}
         <p>Username: 

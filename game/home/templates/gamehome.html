@@ -14,8 +14,21 @@
     </ul>
 
     <ul class = "menu">
-        <li class = "bar"><a href= "{% url 'home' %}">Back To Menu</a></li>
-        <li class = "bar"><a href= "{% url 'savetemp' %}">Save File</a></li>
-        <li class = "bar"><a href= "{% url 'addjewels' %}">Add Jewels</a></li>
+        <form action = "{% url 'home' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Menu</h4></button>
+        </form>
+        <form action = "{% url 'savetemp' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "funcname" value = "gamehome">
+            <button class = bar type = "submit"><h4>Save File</h4></button>
+        </form>
+        <form action = "{% url 'changeamount' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "funcname" value = "gamehome">
+            <input type = "hidden" name = "operation" value = "+">
+            <input type = "hidden" name = "item" value = "Jewels">
+            <input type = "hidden" name = "amount" value = "500">
+            <button class = bar type = "submit"><h4>Add Jewels</h4></button>
+        </form>
     </ul>
 </body>

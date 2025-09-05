@@ -9,13 +9,18 @@
     {% if saves|length > 0 %}
     <h1>Existing saves</h1>
     {% for save in saves %}
-    <h1>{{save}}</h1>
+    <form action = "{% url 'inittemp' %}" method = "POST">
+        {% csrf_token %}
+        <input type = "hidden" name = "savename" value = "{{save}}">
+        <button class = "menu" name = "savename" value = "{{save}}">{{save}}</button>
+    </form>
+    
     {% endfor %}
     {% else %}
     <h1>There are no saves available</h1>
     {% endif %}
     <form action = "{% url 'home' %}" method = "Get">
-        {% csrf_token %}<button class = "menu_button"  type = "submit"><h1>Back To Menu</h1></button>
+        {% csrf_token %}<button class = "menu_button" type = "submit"><h1>Back To Menu</h1></button>
     </form>
 </body>
 </html>
