@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Game Home</title>
-    <link rel="stylesheet" href = "{% static 'game.css' %}">
+    <link rel="stylesheet" href = "{% static 'css/game.css' %}">
 </head>
 <body>
     <ul class = "panel">
@@ -14,13 +14,14 @@
     </ul>
 
     <ul class = "menu">
-        <form action = "{% url 'home' %}" method = "Get">
+        <form action = "{% url 'actualhome' %}" method = "Get">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Menu</h4></button>
         </form>
         <form action = "{% url 'savetemp' %}" method = "POST">
             {% csrf_token %}
             <input type = "hidden" name = "funcname" value = "gamehome">
-            <button class = bar type = "submit"><h4>Save File</h4></button>
+            <button class = "bar" type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
+            <script src = "{% static 'js/script.js' %}"></script>
         </form>
         <form action = "{% url 'changeamount' %}" method = "POST">
             {% csrf_token %}
@@ -28,7 +29,17 @@
             <input type = "hidden" name = "operation" value = "+">
             <input type = "hidden" name = "item" value = "Jewels">
             <input type = "hidden" name = "amount" value = "500">
-            <button class = bar type = "submit"><h4>Add Jewels</h4></button>
+            <button class = "bar" type = "submit"><h4>Add Jewels</h4></button>
         </form>
     </ul>
+    <div class = "homemenu">
+        <form action = "{% url 'displayinventory' %}" method = "Get">
+            {% csrf_token %}
+            <button class = "homemenubutt" type = "submit"><h4>Inventory</h4></button>
+        </form>
+        <form action = "{% url 'displayinventory' %}" method = "Get">
+            {% csrf_token %}
+            <button class = "homemenubutt" type = "submit"><h4>Summon</h4></button>
+        </form>
+    </div>
 </body>

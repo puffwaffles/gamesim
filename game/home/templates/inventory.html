@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory</title>
+    <link rel="stylesheet" href = "{% static 'css/game.css' %}">
+</head>
+<body>
+    <ul class = "panel">
+        <li class = "panelparts">{{username}}</li>
+        <li class = "panelparts">Level: {{level}}</li>
+        <li class = "panelparts">Coins: {{coins}}</li>
+        <li class = "panelparts">Jewels: {{jewels}}</li>
+    </ul>
+
+    <ul class = "menu">
+        <form action = "{% url 'gamehome' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
+        </form>
+        <form action = "{% url 'savetemp' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "funcname" value = "displayinventory">
+            <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
+            <script src = "{% static 'js/script.js' %}"></script>
+        </form>
+    </ul>
+    {% if showselect is False %}
+    <div class = "homemenu">
+    <h1>You have no characters in your inventory. Summon to get more!</h1>
+    </div>
+    {% else %}
+    <div class = "homemenu">
+        <div class = "charpic">
+            <img src = "{% static selected.Picture %}" width="300" height="400">
+        </div>
+        <div class = "infopanel">
+            <h1>{{selected.Name}}</h1>
+            <h2>{{selected.Type}}</h2>
+            <h2>{{selected.Rarity}}</h2>
+            <form action = "{% url 'releasecharacter' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "Pickserial" value = "{{selected.Serial}}">
+                <input type = "hidden" name = "funcname" value = "displayinventory">
+                <button type = "submit">Release Character</button>
+            </form>
+
+        </div>
+    </div>
+    <div class = "inventory">
+        {% for serial, info in inventorychars.items %}
+        <form action = "{% url 'displayinventory' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "Picked" value = "{{info}}">
+            <input type = "hidden" name = "Pickserial" value = "{{serial}}">
+            <button class = "minipic" name = "Picked" value = "{{info}}"><img src = "{% static info.Picture %}" width="50" height="60"></button>
+        </form>
+        {% endfor %}
+
+    </div>
+    
+    {% endif %}
+
+</body>

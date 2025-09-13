@@ -1,0 +1,91 @@
+{
+  "Fire": {
+    "1": {
+      "Flame Whisp": {
+        "Picture": "images/fire/flame_whisp.jpg",
+        "Type": "Fire",
+        "Rarity": 1
+      }
+    },
+    "2": {
+      "Flame Salamander": {
+        "Picture": "images/fire/flame_salamander.jpg",
+        "Type": "Fire",
+        "Rarity": 2
+      }
+    },
+    "3": {
+      "Fire Spirit": {
+        "Picture": "images/fire/fire_spirit.jpg",
+        "Type": "Fire",
+        "Rarity": 3
+      }
+    },
+    "4": {},
+    "5": {}
+  },
+  "Water": {
+    "1": {
+      "Water Orb": {
+        "Picture": "images/water/water_orb.jpg",
+        "Type": "Water",
+        "Rarity": 1
+      }
+    },
+    "2": {
+      "Arrow Fish": {
+        "Picture": "images/water/arrow_fish.jpg",
+        "Type": "Water",
+        "Rarity": 2
+      }
+    },
+    "3": {
+      "Mermaid": {
+        "Picture": "images/water/mermaid.jpg",
+        "Type": "Water",
+        "Rarity": 3
+      }
+    },
+    "4": {},
+    "5": {}
+  },
+  "Wood": {
+    "1": {
+      "Grass Spore": {
+        "Picture": "images/wood/grass_spore.jpg",
+        "Type": "Wood",
+        "Rarity": 1
+      }
+    },
+    "2": {
+      "Flower Kit": {
+        "Picture": "images/wood/forest_kit.jpg",
+        "Type": "Wood",
+        "Rarity": 2
+      }
+    },
+    "3": {
+      "Flower Sprite": {
+        "Picture": "images/wood/flower_sprite.jpg",
+        "Type": "Wood",
+        "Rarity": 3
+      }
+    },
+    "4": {},
+    "5": {}
+  },
+  "Light": {
+    "1": {},
+    "2": {},
+    "3": {},
+    "4": {},
+    "5": {}
+  },
+  "Dark": {
+    "1": {},
+    "2": {},
+    "3": {},
+    "4": {},
+    "5": {}
+  }
+}

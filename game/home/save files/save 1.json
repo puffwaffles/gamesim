@@ -2,7 +2,93 @@
   "Username": "Puffwaffles",
   "Level": 1,
   "Coins": 100000,
-  "Jewels": 2000,
-  "Inventory": {},
-  "Inventory Max Size": 10
+  "Jewels": 3000,
+  "Inventory": {
+    "2": {
+      "Name": "Grass Spore",
+      "Picture": "images/wood/grass_spore.jpg",
+      "Type": "Wood",
+      "Rarity": 1
+    },
+    "4": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "5": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "6": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "8": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "9": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "10": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "11": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "12": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "13": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "14": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "15": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "16": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    },
+    "23": {
+      "Name": "Mermaid",
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3
+    }
+  },
+  "Inventory Max Size": 10,
+  "Serial Number": 1
 }

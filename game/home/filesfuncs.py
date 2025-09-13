@@ -85,7 +85,8 @@ def makenewfile(saveslist, username):
         "Coins": 100000,
         "Jewels": 500,
         "Inventory": {},
-        "Inventory Max Size": 10
+        "Inventory Max Size": 10,
+        "Serial Number": 1
     }
     #Update new saves list
     newsaveslist = saveslist
@@ -111,6 +112,11 @@ def updatetemp(savename, newcontents):
     tempcontents = replacefile(tempcontents, newpath)
     
     return tempcontents
+
+#Return a component (i.e. username) of temp file
+def gettempcomponent(componentname):
+    value = getfile("temp", r'temp file/')["Contents"][componentname]
+    return value
 
 #Update save file with temp's contents
 def updatesave(tempcontents):
@@ -169,7 +175,8 @@ def createnewfile(saveslist):
             "Coins": 100000,
             "Jewels": 500,
             "Inventory": {},
-            "Inventory Max Size": 10
+            "Inventory Max Size": 10,
+            "Serial Number": 1
         }
         #Update new saves list
         newsaveslist = saveslist

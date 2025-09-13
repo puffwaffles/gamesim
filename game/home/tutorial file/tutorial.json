@@ -1,0 +1,35 @@
+{
+    "1": {
+        "PageTitle": "Main Home",
+        "1": {
+            "Title": "Load Saves",
+            "Text": "This button takes you to the load saves menu which allows you to bring up previously saved game files to use. You can click on the button corresponding to the save file you want to play with. If you have not yet made a save file, it will show that no save files have been made. You must create a save file first before you can play."
+        },
+        "2": {
+            "Title": "Create Saves",
+            "Text": "This button takes you to the create saves menu which allows you to create a new save. You will be prompted to enter a new username for the save. If you type in a username for an already existing save, you will be prompted again. You can only make a total of 5 saves maximum."
+        },
+        "3": {
+            "Title": "Delete Saves",
+            "Text": "This button takes you to the delete save menu which allows you to delete a given save if you have any. You can select saves by file name using the dropdown."
+        }
+    },
+    "2": {
+        "PageTitle": "Game Home",
+        "1": {
+            "Title": "Inventory",
+            "Text": "This button takes you to your inventory. In the inventory, you can view all of the characters you have acquired. If you select a character, you will have the option to delete the character from the inventory. If you have no characters, you will be prompted to summon some more."
+        },
+        "2": {
+            "Title": "Summon",
+            "Text": "Work in Progress"
+        }
+    },
+    "3": {
+        "PageTitle": "Buttons That Are In Multiple Pages",
+        "1": {
+            "Title": "Save",
+            "Text": "Allows you to save your progress to the currently used save file. If you don't press the save button before exiting back to the main homepage, any changes made will be undone."
+        }
+    }
+}

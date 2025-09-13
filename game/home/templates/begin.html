@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Before Starting</title>
+    <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
+</head>
+<body>
+    <div class = "tutorial_box">
+        <div class = "middle">
+            <h1>Would you like to see the tutorial before starting?</h1>
+            <form action = "{% url 'tutorial' %}" method = "GET">
+                {% csrf_token %}
+                <button class = "menu_button_bott_left" type = "submit"><h1>Yes</h1></button>
+            </form>
+            <form action = "{% url 'actualhome' %}" method = "GET">
+                {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>No</h1></button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

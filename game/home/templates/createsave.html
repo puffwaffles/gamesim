@@ -3,9 +3,10 @@
 <html>
 <head>
     <title>Create Saves</title>
-    <link rel="stylesheet" href = "{% static 'menu.css' %}">
+    <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
 </head>
 <body>
+    <h1 style = "color: white">Create Saves</h1>
     {% if saves|length > 4 %}
     <h1>Maximum number of saves exceeded!</h1>
     {% else %}
@@ -24,7 +25,7 @@
     {% if error %}
     <p>Sorry, username {{user}} is already taken. Please try another username.</p> 
     {% endif %}
-    <form action = "{% url 'home' %}" method = "Get">
+    <form action = "{% url 'actualhome' %}" method = "Get">
         {% csrf_token %}<button class = "menu_button"  type = "submit"><h1>Back To Menu</h1></button>
     </form>
 </body>

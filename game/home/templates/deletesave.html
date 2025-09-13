@@ -2,10 +2,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Load Saves</title>
-    <link rel="stylesheet" href = "{% static 'menu.css' %}">
+    <title>Delete Saves</title>
+    <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
 </head>
 <body>
+    <h1 style = "color: white">Delete Saves</h1>
     {% if saves|length == 0 %}
     <h1>No saves available to delete!</h1>
     {% else %}
@@ -26,7 +27,7 @@
     <p>Save file {{file}} successfully deleted!</p> 
     {% endif %}
 
-    <form action = "{% url 'home' %}" method = "Get">
+    <form action = "{% url 'actualhome' %}" method = "Get">
         {% csrf_token %}<button class = "menu_button"  type = "submit"><h1>Back To Menu</h1></button>
     </form>
 </body>

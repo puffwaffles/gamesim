@@ -1,0 +1,122 @@
+body {
+    background-color: #ff3300;
+    margin: 0;
+    padding: 0;
+}
+
+.panel {
+    list-style-type: none;
+    margin: 0;
+	padding: 0;
+    left: 0;
+    overflow: flex;
+    background-color: brown;
+}
+
+.panelparts {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    border: 1px brown solid;
+    padding: 30px;
+}
+
+.menu {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+    left: 0;
+	width: 20%;
+	position: fixed;
+    color: white;
+}
+
+.bar, .bar:link, .bar:visited {
+	display: block;
+	text-decoration: none;
+    color: white;
+	text-align: center;
+	font-size: 10pt;
+    width: 100%;
+    padding: 30px;
+    background-color: #3399ff;
+    border-radius: 15px; 
+}
+
+.bar:hover {
+	background-color: #0033cc;
+    cursor: pointer;
+}
+
+button.bar {
+    display: block;
+	text-decoration: none;
+	text-align: center;
+	font-size: 10pt;
+    background-color: #3399ff;
+    width: 100%;
+    padding: 30px;
+    border-radius: 15px; 
+    text-align: center;
+}
+
+.homemenu {
+    width: 80%;
+    background-color: purple;
+    float: right;
+}
+
+.homemenubutt {
+    float: left;
+    background-color: #3399ff;
+	text-decoration: none;
+	text-align: center;
+	font-size: 10pt;
+    width: 50%;
+    height: 50%;
+    padding: 30px;
+    border-radius: 15px; 
+}
+
+.homemenubutt:hover {
+	background-color: #0033cc;
+    cursor: pointer;
+}
+
+.charpic {
+    height: 50%;
+    width: 50%;
+    float: left;
+}
+
+.infopanel {
+    height: 50%;
+    width: 50%;
+    float: left;
+}
+
+.inventory {
+    position: fixed;
+    bottom: 0;
+    overflow: scroll;
+    background: green;
+    height: 10%;
+    width: 80%;
+    right: 0;
+}
+
+.minipic {
+    float: left;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.minipic:hover {
+    cursor: pointer;
+}
+
+.minipic:active {
+    border-color: black;
+    border: 5px;
+}

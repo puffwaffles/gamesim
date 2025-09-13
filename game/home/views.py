@@ -8,22 +8,55 @@ import pandas as pd
 import json
 import os
 from . import filesfuncs
+from . import invfuncs
+import ast
 
 #Used to grab the appropriate function given a view name
 def getview(viewname):
     views = {
         "home": home,
-        "gamehome": gamehome 
+        "actualhome": actualhome,
+        "gamehome": gamehome,
+        "displayinventory": displayinventory
     }
     return views[viewname]
 
-#Home-> Allows you to access load saves, create a save and delete a save functions
+#Shows up first to offer tutorial. More like a pseudo home. See actualhome for the actual home screen
 def home(request):
+    tempfile = filesfuncs.cleartemp()
+    template = loader.get_template('begin.html')
+    return HttpResponse(template.render())
+
+#Home-> Allows you to access load saves, create a save and delete a save functions
+def actualhome(request):
     methods = ['Get']
     #Reset temp file
     tempfile = filesfuncs.cleartemp()
     template = loader.get_template('start.html')
     return HttpResponse(template.render())
+
+#Tutorial-> Displays pages for tutorial to explain parts of the website
+@csrf_protect
+def tutorial(request):
+    methods = ['Get', 'POST']
+    page = 1
+    previouspage = 0
+    nextpage = 2
+    
+    #Tutorial contains a set of pages. Page items represents the contents of these pages. Each page contains a set of <title, text> pairs
+    newcontents = filesfuncs.getfile("tutorial", r'tutorial file/')
+    totalpages = len(newcontents)
+    pageitems = newcontents[str(page)] 
+
+    if request.method == 'POST':
+        
+        #Acquire page numbers
+        page = int(request.POST.get("newpage"))
+        previouspage = page - 1
+        nextpage = page + 1
+        
+        pageitems = newcontents[str(page)]
+    return render(request, 'tutorial.html', {"page": page, "pageitems": pageitems, "previouspage": previouspage, "nextpage": nextpage, "totalpages": totalpages})
 
 #Set temp file
 @csrf_protect
@@ -38,10 +71,10 @@ def inittemp(request):
     return gamehome(request)
 
 def gamehome(request):
-    username = filesfuncs.getfile("temp", r'temp file/')["Contents"]["Username"]
-    level = filesfuncs.getfile("temp", r'temp file/')["Contents"]["Level"]
-    coins = filesfuncs.getfile("temp", r'temp file/')["Contents"]["Coins"]
-    jewels = filesfuncs.getfile("temp", r'temp file/')["Contents"]["Jewels"]
+    username = filesfuncs.gettempcomponent("Username")
+    level = filesfuncs.gettempcomponent("Level")
+    coins = filesfuncs.gettempcomponent("Coins")
+    jewels = filesfuncs.gettempcomponent("Jewels")
     return render(request, 'gamehome.html', {"username": username, "level": level, "coins": coins, "jewels": jewels})
 
 #Update current save to temp contents
@@ -52,7 +85,7 @@ def savetemp(request):
     nextfunc = gamehome
     if request.method == 'POST':
         funcname = request.POST.get("funcname")
-        nextfunct = getview(funcname)
+        nextfunc = getview(funcname)
 
     return nextfunc(request)
 
@@ -68,6 +101,8 @@ def changeamount(request):
         operation = request.POST.get("operation")
         item = request.POST.get("item")
         amount = request.POST.get("amount")
+
+        tempval = tempcontents["Contents"][item]
         
         match operation:
             case "+":
@@ -79,7 +114,11 @@ def changeamount(request):
             case _:
                 tempcontents["Contents"][item] = int(amount)
 
+        if (tempcontents["Contents"][item] < 0):
+            tempcontents["Contents"][item] = tempval
+
         tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
+        
         nextfunc = getview(funcname)
 
     return nextfunc(request)
@@ -113,6 +152,68 @@ def createsave(request):
     return render(request, 'createsave.html', {"saves": saveslist, "error": error,  "create": create, "user": user})
 
 @csrf_protect
+def releasecharacter(request):
+    nextfunc = displayinventory
+    methods = ['POST']
+
+    if request.method == 'POST':
+        serial = request.POST.get("Pickserial")
+        success = invfuncs.release(serial)
+        funcname = "displayinventory"
+        nextfunc = getview(funcname)
+
+    return nextfunc(request)
+
+#Displays the inventory page
+@csrf_protect
+def displayinventory(request):
+    methods = ['Get', 'POST']
+
+    username = filesfuncs.gettempcomponent("Username")
+    level = filesfuncs.gettempcomponent("Level")
+    coins = filesfuncs.gettempcomponent("Coins")
+    jewels = filesfuncs.gettempcomponent("Jewels")
+
+    inventorychars = filesfuncs.gettempcomponent("Inventory")
+
+    showselect = False
+
+    selected = {
+        "Name": "",
+        "Serial": 0,
+        "Picture": "",
+        "Type": "",
+        "Rarity": 0
+    }
+
+    if request.method == 'GET':
+        if (len(inventorychars) > 0):
+            showselect = True
+            indices = [int(nums) for nums in inventorychars.keys()] 
+            firstone = str(min(indices))
+            selected = inventorychars[firstone]
+            selected["Serial"] = firstone
+
+    if request.method == 'POST':
+        if (len(inventorychars) > 0):
+            showselect = True
+            try:
+                selected = ast.literal_eval(request.POST.get("Picked"))
+            except:
+                indices = [int(nums) for nums in inventorychars.keys()] 
+                firstone = str(min(indices))
+                selected = inventorychars[firstone]
+                selected["Serial"] = firstone
+                print(f"First selected[{selected["Serial"]}] is {selected["Name"]}")
+            else:
+                selectedserial = int(request.POST.get("Pickserial"))
+                selected["Serial"] = selectedserial
+                print(f"New selected[{selected["Serial"]}] is {selected["Name"]}")
+        
+    return render(request, 'inventory.html', {"username": username, "level": level, "coins": coins, "jewels": jewels, "inventorychars": inventorychars, "showselect": showselect, "selected": selected})
+
+#Provides menu for deleting saves
+@csrf_protect
 def deletesave(request):
     methods = ['Get', 'POST']
     saveslist = filesfuncs.acquirefiles()
@@ -123,7 +224,6 @@ def deletesave(request):
 
     if request.method == 'POST':
         file = request.POST.get("savefile")
-        print(file)
         delete = True        
         saveslist = filesfuncs.removeoldfile(saveslist, file)
         savenames = filesfuncs.filessorted(saveslist)

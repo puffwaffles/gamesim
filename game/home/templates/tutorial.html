@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Before Starting</title>
+    <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
+</head>
+<body>
+    
+    <div class = "tutorial_box">
+        <div class = "middle">
+            <h1>{{pageitems.PageTitle}}</h1>
+        </div>
+        {% for keyparts, parts in pageitems.items %}
+            {% if keyparts != pageitems.PageTitle%}
+            <h2>{{parts.Title}}</h2>
+            <p>{{parts.Text}}</p>
+            {% endif %}
+        {% endfor %}
+        
+        <form action = "{% url 'actualhome' %}" method = "GET">
+            {% csrf_token %}<button class = "menu_button_bott_left" type = "submit"><h1>Skip Tutorial</h1></button>
+        </form>
+        {% if totalpages > page %}
+        <form action = "{% url 'tutorial' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "newpage" value = "{{nextpage}}">
+            <button class = "menu_button_bott_right" type = "submit"><h1>Next</h1></button>
+        </form>
+        {% endif %}
+        {% if totalpages == page %}
+        <form action = "{% url 'actualhome' %}" method = "GET">
+            {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Continue To Home</h1></button>
+        </form>
+        {% endif %}
+        {% if page > 1 %}
+        <form action = "{% url 'tutorial' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "newpage" value = "{{previouspage}}">
+            <button class = "menu_button_bott_right" type = "submit"><h1>Back</h1></button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>
