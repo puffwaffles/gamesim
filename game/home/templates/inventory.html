@@ -11,6 +11,7 @@
         <li class = "panelparts">Level: {{level}}</li>
         <li class = "panelparts">Coins: {{coins}}</li>
         <li class = "panelparts">Jewels: {{jewels}}</li>
+        <li class = "panelparts">${{realmoney}}</li>
     </ul>
 
     <ul class = "menu">
@@ -22,6 +23,9 @@
             <input type = "hidden" name = "funcname" value = "displayinventory">
             <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
+        </form>
+        <form action = "{% url 'tutorial' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
         </form>
     </ul>
     {% if showselect is False %}
@@ -43,10 +47,18 @@
                 <input type = "hidden" name = "funcname" value = "displayinventory">
                 <button type = "submit">Release Character</button>
             </form>
-
         </div>
     </div>
     <div class = "inventory">
+        <div class = "minipic">{{numchars}} / {{inventorysize}}</div>
+        <form action = "{% url 'displayinventory' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "transaction" value = "True">
+            <button class = "minipic"> + </button>
+            {% if success is False %}
+            <script src = "{% static 'js/script.js' %}">amounterror("coins");</script>
+            {% endif%}
+        </form>
         {% for serial, info in inventorychars.items %}
         <form action = "{% url 'displayinventory' %}" method = "POST">
             {% csrf_token %}

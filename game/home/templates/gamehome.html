@@ -11,6 +11,7 @@
         <li class = "panelparts">Level: {{level}}</li>
         <li class = "panelparts">Coins: {{coins}}</li>
         <li class = "panelparts">Jewels: {{jewels}}</li>
+        <li class = "panelparts">${{realmoney}}</li>
     </ul>
 
     <ul class = "menu">
@@ -30,6 +31,10 @@
             <input type = "hidden" name = "item" value = "Jewels">
             <input type = "hidden" name = "amount" value = "500">
             <button class = "bar" type = "submit"><h4>Add Jewels</h4></button>
+            
+        </form>
+        <form action = "{% url 'tutorial' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
         </form>
     </ul>
     <div class = "homemenu">
@@ -40,6 +45,10 @@
         <form action = "{% url 'displayinventory' %}" method = "Get">
             {% csrf_token %}
             <button class = "homemenubutt" type = "submit"><h4>Summon</h4></button>
+        </form>
+        <form action = "{% url 'shop' %}" method = "Get">
+            {% csrf_token %}
+            <button class = "homemenubutt" type = "submit"><h4>Shop</h4></button>
         </form>
     </div>
 </body>

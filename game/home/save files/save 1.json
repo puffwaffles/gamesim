@@ -1,8 +1,9 @@
 {
   "Username": "Puffwaffles",
   "Level": 1,
-  "Coins": 100000,
-  "Jewels": 3000,
+  "Coins": 250000,
+  "Jewels": 745,
+  "Real Money Spent": 0,
   "Inventory": {
     "2": {
       "Name": "Grass Spore",
@@ -69,26 +70,9 @@
       "Picture": "images/water/mermaid.jpg",
       "Type": "Water",
       "Rarity": 3
-    },
-    "15": {
-      "Name": "Mermaid",
-      "Picture": "images/water/mermaid.jpg",
-      "Type": "Water",
-      "Rarity": 3
-    },
-    "16": {
-      "Name": "Mermaid",
-      "Picture": "images/water/mermaid.jpg",
-      "Type": "Water",
-      "Rarity": 3
-    },
-    "23": {
-      "Name": "Mermaid",
-      "Picture": "images/water/mermaid.jpg",
-      "Type": "Water",
-      "Rarity": 3
     }
   },
-  "Inventory Max Size": 10,
-  "Serial Number": 1
+  "Inventory Max Size": 20,
+  "Serial Number": 1,
+  "Tutorialsite": "actualhome"
 }

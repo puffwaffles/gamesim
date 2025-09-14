@@ -18,10 +18,10 @@
             {% endif %}
         {% endfor %}
         
-        <form action = "{% url 'actualhome' %}" method = "GET">
-            {% csrf_token %}<button class = "menu_button_bott_left" type = "submit"><h1>Skip Tutorial</h1></button>
-        </form>
         {% if totalpages > page %}
+         <form action = "{% url tutorialexit %}" method = "GET">
+            {% csrf_token %}<button class = "menu_button_bott_left" type = "submit"><h1>Exit Tutorial</h1></button>
+        </form>
         <form action = "{% url 'tutorial' %}" method = "POST">
             {% csrf_token %}
             <input type = "hidden" name = "newpage" value = "{{nextpage}}">
@@ -29,11 +29,15 @@
         </form>
         {% endif %}
         {% if totalpages == page %}
-        <form action = "{% url 'actualhome' %}" method = "GET">
-            {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Continue To Home</h1></button>
+        <form action = "{% url 'tutorial' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "newpage" value = "{{previouspage}}">
+            <button class = "menu_button_bott_left" type = "submit"><h1>Back</h1></button>
         </form>
-        {% endif %}
-        {% if page > 1 %}
+        <form action = "{% url tutorialexit %}" method = "GET">
+            {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Exit Tutorial</h1></button>
+        </form>
+        {% elif page > 1 %}
         <form action = "{% url 'tutorial' %}" method = "POST">
             {% csrf_token %}
             <input type = "hidden" name = "newpage" value = "{{previouspage}}">

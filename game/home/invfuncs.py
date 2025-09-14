@@ -24,6 +24,12 @@ def pickval(probslist):
 
     return val
 
+#Converts value into 1 or -1 to denote success or failure
+def intbool(value):
+    if (value == True):
+        return 1
+    else:
+        return -1
 
 #Pick random char based on type probabilities and rarity probabilities (in terms of decimals from 0 to 1)
 def pickchar(types, raritieslist):
@@ -160,6 +166,17 @@ def updatetempinv(charname):
         
     return success
 
+#Returns rarity given character serial number
+def serialgetrarity(serial):
+    rarity = 0
+    numchars = len(filesfuncs.gettempcomponent("Inventory"))
+    if (numchars > 0):
+        tempcontents = filesfuncs.getfile("temp", r'temp file/')
+        if (serial in tempcontents["Contents"]["Inventory"]):
+            rarity = tempcontents["Contents"]["Inventory"][serial]["Rarity"]
+    return rarity
+
+
 #Removes character given character serial number
 def release(serial):
     success = False
@@ -175,6 +192,15 @@ def release(serial):
         success = True
 
     return success
+
+#Increases current inventory size
+def increaseinventory():
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    tempcontents["Contents"]["Inventory Max Size"] += 10
+    tempsavename = tempcontents["Save Name"]
+    newtemp = filesfuncs.updatetemp(tempsavename, tempcontents["Contents"]) 
+
+    pass
 
 #Organizes roster characters by type and rarity
 def organizeroster():

@@ -120,3 +120,44 @@ button.bar {
     border-color: black;
     border: 5px;
 }
+
+.tablist {
+    overflow: hidden;
+    padding-right: 10px;
+}
+
+.tabs {
+    float: left;
+    border-radius: 10px 10px 0px 0px;
+    border-color: black;
+    border: 10px;
+    border-bottom: none;
+    padding-right: 20px;
+}
+
+.tabs:hover {
+    cursor: pointer;
+}
+
+.tabs.active, .tabs:hover {
+    background-color: rgb(54, 215, 255);
+}
+
+.packagelist {
+    display: none;
+    background-color: rgb(54, 215, 255);
+    overflow-x: scroll;
+    border-color: black;
+    border: 5px;
+    padding: 20px;
+}
+
+.packages {
+    float: left;
+	list-style-type: none;
+	margin: 0;
+	padding: 10px;
+    background-color: aliceblue;
+    border-radius: 10px;
+    border-color: black;
+}

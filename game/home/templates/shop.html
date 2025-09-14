@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop</title>
+    <link rel="stylesheet" href = "{% static 'css/game.css' %}">
+</head>
+<body>
+    <ul class = "panel">
+        <li class = "panelparts">{{username}}</li>
+        <li class = "panelparts">Level: {{level}}</li>
+        <li class = "panelparts">Coins: {{coins}}</li>
+        <li class = "panelparts">Jewels: {{jewels}}</li>
+        <li class = "panelparts">${{realmoney}}</li>
+    </ul>
+
+    <ul class = "menu">
+        <form action = "{% url 'gamehome' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
+        </form>
+        <form action = "{% url 'savetemp' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "funcname" value = "shop">
+            <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
+            <script src = "{% static 'js/script.js' %}"></script>
+        </form>
+        <form action = "{% url 'tutorial' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
+        </form>
+    </ul>
+
+    {% if success == -1 %}
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>amounterror('jewels');</script>
+    {% elif success == 1 %}
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>packagesuccess();</script>
+    {% endif%}
+
+    <div class = "homemenu">
+        <div class = "tablist">
+            {% if defaulttab == "Coins" %}
+            <button class = "tabs" onclick = "displaypackagelist(event, 'Coins')" id = "defaulttab"> Coins</button>
+            <button class = "tabs" onclick = "displaypackagelist(event, 'Jewels')">Jewels</button>
+            {% elif defaulttab == "Jewels" %}
+            <button class = "tabs" onclick = "displaypackagelist(event, 'Coins')" id = "Coins"> Coins</button>
+            <button class = "tabs" onclick = "displaypackagelist(event, 'Jewels')"  id = "defaulttab">Jewels</button>
+            {% endif %}
+            
+        </div>
+        <div id = "Coins" class = "packagelist">
+
+            <form action = "{% url 'shop' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "transaction" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Coins">
+                <input type = "hidden" name = "currency1" value = "Jewels">
+                <input type = "hidden" name = "operation1" value = "-">
+                <input type = "hidden" name = "amount1" value = "50">
+                <input type = "hidden" name = "currency2" value = "Coins">
+                <input type = "hidden" name = "operation2" value = "+">
+                <input type = "hidden" name = "amount2" value = "10000">
+                <button class = "packages"> 
+                    <p>100000 Coins</p>
+                    <p>Cost: 50 Jewels</p>
+                </button>
+            </form>   
+
+            <form action = "{% url 'shop' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "transaction" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Coins">
+                <input type = "hidden" name = "currency1" value = "Jewels">
+                <input type = "hidden" name = "operation1" value = "-">
+                <input type = "hidden" name = "amount1" value = "200">
+                <input type = "hidden" name = "currency2" value = "Coins">
+                <input type = "hidden" name = "operation2" value = "+">
+                <input type = "hidden" name = "amount2" value = "10000">
+                <button class = "packages"> 
+                    <p>500000 Coins</p>
+                    <p>Cost: 200 Jewels</p>
+                </button>
+            </form>
+
+        </div>
+        <div id = "Jewels" class = "packagelist">
+
+            <form action = "{% url 'shop' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "transaction" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Jewels">
+                <input type = "hidden" name = "currency1" value = "Real Money Spent">
+                <input type = "hidden" name = "operation1" value = "+">
+                <input type = "hidden" name = "amount1" value = "1.99">
+                <input type = "hidden" name = "currency2" value = "Jewels">
+                <input type = "hidden" name = "operation2" value = "+">
+                <input type = "hidden" name = "amount2" value = "50">
+                <button class = "packages"> 
+                    <p>50 Jewels</p>
+                    <p>Cost: $1.99</p>
+                </button>
+            </form>   
+
+            <form action = "{% url 'shop' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "transaction" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Jewels">
+                <input type = "hidden" name = "currency1" value = "Real Money Spent">
+                <input type = "hidden" name = "operation1" value = "+">
+                <input type = "hidden" name = "amount1" value = "9.99">
+                <input type = "hidden" name = "currency2" value = "Jewels">
+                <input type = "hidden" name = "operation2" value = "+">
+                <input type = "hidden" name = "amount2" value = "550">
+                <button class = "packages"> 
+                    <p>550 Jewels</p>
+                    <p>Cost: $9.99</p>
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>document.getElementById("defaulttab").click();</script>
+</body>

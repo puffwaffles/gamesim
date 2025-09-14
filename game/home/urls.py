@@ -14,4 +14,5 @@ urlpatterns = [
     path('gamehome/', views.gamehome, name = "gamehome"),
     path('inventory/', views.displayinventory, name = "displayinventory"),
     path('release/', views.releasecharacter, name = "releasecharacter"),
+    path('shop/', views.shop, name = "shop"),
 ]

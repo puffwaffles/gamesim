@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.views.decorators.csrf import requires_csrf_token
@@ -9,6 +10,7 @@ import json
 import os
 from . import filesfuncs
 from . import invfuncs
+import random
 import ast
 
 #Used to grab the appropriate function given a view name
@@ -17,7 +19,8 @@ def getview(viewname):
         "home": home,
         "actualhome": actualhome,
         "gamehome": gamehome,
-        "displayinventory": displayinventory
+        "displayinventory": displayinventory,
+        "shop": shop
     }
     return views[viewname]
 
@@ -42,6 +45,14 @@ def tutorial(request):
     page = 1
     previouspage = 0
     nextpage = 2
+
+    
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    if (len(tempcontents) > 0):
+        tutorialexit = tempcontents["Contents"]["Tutorialsite"]
+        #tutorialexit = getview(tempcontents["Contents"]["Tutorialsite"])
+    else:
+        tutorialexit = "actualhome"
     
     #Tutorial contains a set of pages. Page items represents the contents of these pages. Each page contains a set of <title, text> pairs
     newcontents = filesfuncs.getfile("tutorial", r'tutorial file/')
@@ -56,7 +67,16 @@ def tutorial(request):
         nextpage = page + 1
         
         pageitems = newcontents[str(page)]
-    return render(request, 'tutorial.html', {"page": page, "pageitems": pageitems, "previouspage": previouspage, "nextpage": nextpage, "totalpages": totalpages})
+
+    context = {
+        "tutorialexit": tutorialexit,
+        "page": page, 
+        "pageitems": pageitems, 
+        "previouspage": previouspage, 
+        "nextpage": nextpage, 
+        "totalpages": totalpages
+    }
+    return render(request, 'tutorial.html', context)
 
 #Set temp file
 @csrf_protect
@@ -67,15 +87,20 @@ def inittemp(request):
         saveslist = filesfuncs.acquirefiles()
         newcontents = filesfuncs.getfile(savename, r'save files/')
         tempfile = filesfuncs.updatetemp(savename, newcontents)
-       
-    return gamehome(request)
+    
+    return gamehome(request)   
 
 def gamehome(request):
-    username = filesfuncs.gettempcomponent("Username")
-    level = filesfuncs.gettempcomponent("Level")
-    coins = filesfuncs.gettempcomponent("Coins")
-    jewels = filesfuncs.gettempcomponent("Jewels")
-    return render(request, 'gamehome.html', {"username": username, "level": level, "coins": coins, "jewels": jewels})
+    panel = filesfuncs.panelitems()
+    context = {
+        "username": panel["Username"], 
+        "level": panel["Level"], 
+        "coins": panel["Coins"], 
+        "jewels": panel["Jewels"], 
+        "realmoney": panel["Real Money Spent"]
+    } 
+    filesfuncs.updatetutorial("gamehome")
+    return render(request, 'gamehome.html', context)
 
 #Update current save to temp contents
 @csrf_protect
@@ -83,11 +108,51 @@ def savetemp(request):
     tempcontents = filesfuncs.getfile("temp", r'temp file/')
     savedfile = filesfuncs.updatesave(tempcontents)
     nextfunc = gamehome
+
     if request.method == 'POST':
         funcname = request.POST.get("funcname")
+    
         nextfunc = getview(funcname)
 
     return nextfunc(request)
+
+def maketransaction(item, operation, amount):
+    success = True
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    savename = tempcontents["Save Name"]
+
+    if (item != "Real Money Spent" and operation != "*"):
+        amount = int(amount)
+    else:
+        amount = float(amount)
+
+    match operation:
+        case "+":
+            tempcontents["Contents"][item] = tempcontents["Contents"][item] + amount
+        case "-":
+            if (checktransaction(item, amount)):
+                tempcontents["Contents"][item] = tempcontents["Contents"][item] - amount 
+            else:
+                success = False
+        case "*":
+            if (item != "Real Money Spent"):
+                tempcontents["Contents"][item] = int(float(tempcontents["Contents"][item]) * amount)
+            else:
+                tempcontents["Contents"][item] = round(float(tempcontents["Contents"][item]) * amount, 2)
+        case _:
+            tempcontents["Contents"][item] = amount
+
+    tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
+
+    return success
+
+def checktransaction(currency, amount):
+    success = False
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    
+    if (tempcontents["Contents"][currency] - amount >= 0):
+        success = True
+    return success
 
 #Testing purposes for adding to jewels amount
 @csrf_protect
@@ -118,7 +183,7 @@ def changeamount(request):
             tempcontents["Contents"][item] = tempval
 
         tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
-        
+
         nextfunc = getview(funcname)
 
     return nextfunc(request)
@@ -154,29 +219,45 @@ def createsave(request):
 @csrf_protect
 def releasecharacter(request):
     nextfunc = displayinventory
+    funcname = "displayinventory"
     methods = ['POST']
+    currency = "Coins"
+    amount = 1000
+    operation = "+"
 
     if request.method == 'POST':
         serial = request.POST.get("Pickserial")
-        success = invfuncs.release(serial)
-        funcname = "displayinventory"
+        rarity = invfuncs.serialgetrarity(serial)
+        if (rarity < 1):
+            amount = 0
+            maketransaction(item, operation, amount)
+        elif (rarity < 3):
+            amount = amount + random.randint(0, int(amount / 2))
+            maketransaction(currency, operation, amount)
+        else:
+            currency = "Jewels"
+            amount = 10 * rarity
+            amount = amount + random.randint(0, int(amount / rarity))
+            maketransaction(currency, operation, amount)
+
+
+        success = invfuncs.release(serial) 
         nextfunc = getview(funcname)
 
-    return nextfunc(request)
 
+    return nextfunc(request)
+    
 #Displays the inventory page
 @csrf_protect
 def displayinventory(request):
     methods = ['Get', 'POST']
 
-    username = filesfuncs.gettempcomponent("Username")
-    level = filesfuncs.gettempcomponent("Level")
-    coins = filesfuncs.gettempcomponent("Coins")
-    jewels = filesfuncs.gettempcomponent("Jewels")
-
     inventorychars = filesfuncs.gettempcomponent("Inventory")
-
+    numchars = len(inventorychars)
+    transaction = "False"
+    success = True
     showselect = False
+    filesfuncs.updatetutorial("displayinventory")
 
     selected = {
         "Name": "",
@@ -187,7 +268,7 @@ def displayinventory(request):
     }
 
     if request.method == 'GET':
-        if (len(inventorychars) > 0):
+        if (numchars > 0):
             showselect = True
             indices = [int(nums) for nums in inventorychars.keys()] 
             firstone = str(min(indices))
@@ -195,7 +276,7 @@ def displayinventory(request):
             selected["Serial"] = firstone
 
     if request.method == 'POST':
-        if (len(inventorychars) > 0):
+        if (numchars > 0):
             showselect = True
             try:
                 selected = ast.literal_eval(request.POST.get("Picked"))
@@ -209,8 +290,31 @@ def displayinventory(request):
                 selectedserial = int(request.POST.get("Pickserial"))
                 selected["Serial"] = selectedserial
                 print(f"New selected[{selected["Serial"]}] is {selected["Name"]}")
-        
-    return render(request, 'inventory.html', {"username": username, "level": level, "coins": coins, "jewels": jewels, "inventorychars": inventorychars, "showselect": showselect, "selected": selected})
+            
+            #Transaction for increasing inventory size
+            transaction = request.POST.get("transaction")
+            if(transaction == "True"):
+                transaction = request.POST.get("transaction")
+                success = maketransaction("Coins", "-", 10000)
+                if (success == True):
+                    invfuncs.increaseinventory()
+    panel = filesfuncs.panelitems()
+
+    context = {
+        "username": panel["Username"], 
+        "level": panel["Level"], 
+        "coins": panel["Coins"], 
+        "jewels": panel["Jewels"], 
+        "realmoney": panel["Real Money Spent"],
+        "inventorychars": inventorychars, 
+        "showselect": showselect, 
+        "selected": selected, 
+        "success": success,
+        "inventorysize": panel["Inventory Max Size"],
+        "numchars": numchars
+    } 
+
+    return render(request, 'inventory.html', context)
 
 #Provides menu for deleting saves
 @csrf_protect
@@ -230,4 +334,58 @@ def deletesave(request):
         
     return render(request, 'deletesave.html', {"saves": savenames,  "delete": delete, "file": file})
 
+#Represents a shop that allows you to buy things
+@csrf_protect
+def shop(request):
+    methods = ['Get', 'POST']
+
+    inventorychars = filesfuncs.gettempcomponent("Inventory")
+    numchars = len(inventorychars)
+    transaction = "False"
+    filesfuncs.updatetutorial("shop")
+
+    #Default that represents no transaction that has taken place. -1 is failure and 1 is success
+    success = 0
+
+    #Default tab is first one
+    defaulttab = "Coins"
+
+    #Handles chosen transactions
+    if request.method == 'POST':
+        print(f"Post request made!")
+        defaulttab = request.POST.get("defaulttab")
+
+        try:
+            transaction = request.POST.get("transaction")
+        except: 
+            success = 0
+        else:
+            print(f"transaction = {True}")
+            if (transaction == "True"):
+                print(f"Transaction made!")
+                currency1 = request.POST.get("currency1")
+                operation1 = request.POST.get("operation1")
+                amount1 = request.POST.get("amount1")
+                success = invfuncs.intbool(maketransaction(currency1, operation1, amount1))
+                if (success == 1):
+                    print(f"transaction went through!")
+                    currency2 = request.POST.get("currency2")
+                    operation2 = request.POST.get("operation2")
+                    amount2 = request.POST.get("amount2")
+                    success = invfuncs.intbool(maketransaction(currency2, operation2, amount2)) 
+    panel = filesfuncs.panelitems()
+    context = {
+        "defaulttab": defaulttab,
+        "username": panel["Username"], 
+        "level": panel["Level"], 
+        "coins": panel["Coins"], 
+        "jewels": panel["Jewels"], 
+        "realmoney": panel["Real Money Spent"],
+        "inventorychars": inventorychars, 
+        "success": success,
+        "inventorysize": panel["Inventory Max Size"],
+        "numchars": numchars
+    } 
+    print(f"success: {success}")
+    return render(request, 'shop.html', context)
 

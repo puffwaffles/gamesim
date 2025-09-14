@@ -174,9 +174,11 @@ def createnewfile(saveslist):
             "Level": 1,
             "Coins": 100000,
             "Jewels": 500,
+            "Real Money Spent": 0,
             "Inventory": {},
-            "Inventory Max Size": 10,
-            "Serial Number": 1
+            "Inventory Max Size": 20,
+            "Serial Number": 1,
+            "Tutorialsite": "actualhome"
         }
         #Update new saves list
         newsaveslist = saveslist
@@ -254,7 +256,26 @@ def filemenudisplay():
     print("\n")
     return choice
 
-#Provides menu operations for save files
+#Provides a dictionary that packages all of the needed items in the panel
+def panelitems():
+    panel = {
+        "Username": gettempcomponent("Username"),
+        "Level": gettempcomponent("Level"),
+        "Coins": gettempcomponent("Coins"),
+        "Jewels": gettempcomponent("Jewels"),
+        "Real Money Spent": gettempcomponent("Real Money Spent"),
+        "Inventory Max Size": gettempcomponent("Inventory Max Size")
+    }
+    return panel
+
+def updatetutorial(viewname):
+    tempcontents = f=getfile("temp", r'temp file/')
+    savename = tempcontents["Save Name"]
+    tempcontents["Contents"]["Tutorialsite"] = viewname
+    tempfile = updatetemp(savename, tempcontents["Contents"])
+    pass
+
+#Provides menu operations for save files (terminal version)
 def filemenu():
     saveslist = acquirefiles()
     finish = False

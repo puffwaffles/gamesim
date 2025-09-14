@@ -18,11 +18,15 @@
         "PageTitle": "Game Home",
         "1": {
             "Title": "Inventory",
-            "Text": "This button takes you to your inventory. In the inventory, you can view all of the characters you have acquired. If you select a character, you will have the option to delete the character from the inventory. If you have no characters, you will be prompted to summon some more."
+            "Text": "This button takes you to your inventory. In the inventory, you can view all of the characters you have acquired. If you select a character, you will have the option to delete the character from the inventory. If you have no characters, you will be prompted to summon some more. If you run out of space in your inventory, you can choose to release a character or expand your inventory. You can release a character by selecting one from the bottom bar and pressing the release button. This will give you a random reward based on the character's rarity. If you want to increase the inventory's capacity, press the + button on the left of the bottom bar. This will increase inventory by 10 and cost 10000 coins."
         },
         "2": {
             "Title": "Summon",
             "Text": "Work in Progress"
+        },
+        "3": {
+            "Title": "Shop",
+            "Text": "This button takes you to the shop. In the shop you can by various currencies and other items. Some items will use \"Real money\", which represents real life money being spent."
         }
     },
     "3": {
