@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Summon</title>
+    <link rel="stylesheet" href = "{% static 'css/game.css' %}">
+</head>
+<body>
+    <ul class = "panel">
+        <li class = "panelparts">{{username}}</li>
+        <li class = "panelparts">Level: {{level}}</li>
+        <li class = "panelparts">Coins: {{coins}}</li>
+        <li class = "panelparts">Jewels: {{jewels}}</li>
+        <li class = "panelparts">${{realmoney}}</li>
+    </ul>
+
+    <ul class = "menu">
+        <form action = "{% url 'summon' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Summon</h4></button>
+        </form>
+    </ul>
+
+    <div class = "summonspace">
+        {% for summoned in summonlist %}
+            <img class = "summons" id = "summoned" src = "{% static summoned.Picture %}" width="100" height="120">
+        {% endfor %}
+    </div>
+    <script src = "{% static 'js/script.js' %}"></script>
+    
+    <script>showslowly(0);</script>
+    
+</body>

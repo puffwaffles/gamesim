@@ -20,7 +20,10 @@ def getview(viewname):
         "actualhome": actualhome,
         "gamehome": gamehome,
         "displayinventory": displayinventory,
-        "shop": shop
+        "shop": shop,
+        "summon": summon,
+        "summonresults": summonresults,
+        "roster": roster
     }
     return views[viewname]
 
@@ -90,6 +93,7 @@ def inittemp(request):
     
     return gamehome(request)   
 
+@csrf_protect
 def gamehome(request):
     panel = filesfuncs.panelitems()
     context = {
@@ -100,6 +104,7 @@ def gamehome(request):
         "realmoney": panel["Real Money Spent"]
     } 
     filesfuncs.updatetutorial("gamehome")
+    methods = ['POST']
     return render(request, 'gamehome.html', context)
 
 #Update current save to temp contents
@@ -107,6 +112,7 @@ def gamehome(request):
 def savetemp(request):
     tempcontents = filesfuncs.getfile("temp", r'temp file/')
     savedfile = filesfuncs.updatesave(tempcontents)
+
     nextfunc = gamehome
 
     if request.method == 'POST':
@@ -124,7 +130,7 @@ def maketransaction(item, operation, amount):
     if (item != "Real Money Spent" and operation != "*"):
         amount = int(amount)
     else:
-        amount = float(amount)
+        amount = round(float(amount), 2)
 
     match operation:
         case "+":
@@ -350,15 +356,23 @@ def shop(request):
     #Default tab is first one
     defaulttab = "Coins"
 
+    if request.method == "GET":
+        defaulttab = "Coins"
+        print("Defaulttab is set to coins")
     #Handles chosen transactions
     if request.method == 'POST':
         print(f"Post request made!")
         defaulttab = request.POST.get("defaulttab")
 
+        if (defaulttab == None):
+            defaulttab = "Coins"
+        print(f"defaulttab: {defaulttab}")
         try:
             transaction = request.POST.get("transaction")
         except: 
             success = 0
+            defaulttab = "Coins"
+            print(f"defaulttab is {defaulttab}")
         else:
             print(f"transaction = {True}")
             if (transaction == "True"):
@@ -373,6 +387,8 @@ def shop(request):
                     operation2 = request.POST.get("operation2")
                     amount2 = request.POST.get("amount2")
                     success = invfuncs.intbool(maketransaction(currency2, operation2, amount2)) 
+                else:
+                    defaulttab = "Coins"
     panel = filesfuncs.panelitems()
     context = {
         "defaulttab": defaulttab,
@@ -387,5 +403,205 @@ def shop(request):
         "numchars": numchars
     } 
     print(f"success: {success}")
+    print(f"defaulttab: {defaulttab}")
     return render(request, 'shop.html', context)
 
+#Represents the summons area which allows you to summon more characters
+@csrf_protect
+def summon(request):
+    methods = ['Get', 'POST']
+
+    inventorychars = filesfuncs.gettempcomponent("Inventory")
+    numchars = len(inventorychars)
+    transaction = "False"
+    filesfuncs.updatetutorial("summon")
+
+    #Default that represents no transaction that has taken place. -1 is failure and 1 is success
+    success = 0
+    failedcurrency = ""
+    #Determines if a summon can be made based on inventory capacity
+    summonable = True
+    summonlist = []
+
+    #Default tab is first one
+    defaulttab = "Coins"
+
+    #Handles chosen transactions
+    if request.method == 'POST':
+        print(f"Post request made!")
+        #Check if transaction value has been set by post request
+        try:
+            transaction = request.POST.get("transaction")
+        except: 
+            success = 0
+        else:
+            if (transaction == "True"):
+                print(f"Transaction made!")
+                #Get information on type of summon to be made
+                summontype = request.POST.get("summontype")
+                summoninfo = invfuncs.summoncomponents()
+
+                if (summontype in summoninfo.keys()):
+
+                    #Check the amount that will be added to the inventory
+                    toadd = summoninfo[summontype]["Number of Summons"]
+                    #If there is enough space in inventory, proceed with the transaction
+                    if (numchars + toadd <= filesfuncs.gettempcomponent("Inventory Max Size")):
+                        print(f"transaction = {True}")
+                        summonable = True
+                        #Perform transaction changes
+                        currency1 = request.POST.get("currency1")
+                        failedcurrency = currency1.lower()
+                        operation1 = request.POST.get("operation1")
+                        amount1 = request.POST.get("amount1")
+                        success = invfuncs.intbool(maketransaction(currency1, operation1, amount1))
+
+                        if (success == 1):
+                            #If transaction can proceed, start summoning characters
+                            if (toadd == 1):
+                                types = summoninfo[summontype]["Types"]
+                                baserarities = summoninfo[summontype]["Base Rarities"]
+                                summonlist = invfuncs.summonfor1(types, baserarities)
+                            else:
+                                types = summoninfo[summontype]["Types"]
+                                baserarities = summoninfo[summontype]["Base Rarities"]
+                                pityrarities = summoninfo[summontype]["Pity Rarity"]
+                                summonlist = invfuncs.summonfor10(types, baserarities, pityrarities)
+                    else:
+                        summonable = False
+                else:
+                    summonable = False
+
+    panel = filesfuncs.panelitems()
+    context = {
+        "username": panel["Username"], 
+        "level": panel["Level"], 
+        "coins": panel["Coins"], 
+        "jewels": panel["Jewels"], 
+        "realmoney": panel["Real Money Spent"],
+        "inventorychars": inventorychars, 
+        "success": success,
+        "failedcurrency": failedcurrency,
+        "summonable": summonable,
+        "inventorysize": panel["Inventory Max Size"],
+        "numchars": numchars
+    }
+    
+    #Means that characters will be summoned and user will be redirected to summon page
+    if (success == 1 and summonable == True):
+        return summonresults(request, context, summonlist)
+    #Display normal summon menu as usual
+    else:
+        return render(request, 'summon.html', context)
+
+#Displays the results of the summon
+def summonresults(request, context, summonlist):
+    newcontext = context
+    newcontext["summonlist"] = summonlist
+    return render(request, 'summonresults.html', newcontext)
+
+#Represents a shop that allows you to buy things
+@csrf_protect
+def roster(request):
+    methods = ['Get', 'POST']
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    #Get roster from tempfile
+    temproster = tempcontents["Contents"]["Chracter Collection"]
+    #Get info on whether characters can be claimed
+    claimable = len(invfuncs.hasrewards())
+    print(f"claimable: {claimable}")
+    #Flag for when someone clicks on a character panel in the roster
+    claimsingle = "False"
+    #Flag for when someone clicks on claim all rewards
+    claimall = "False"
+    filesfuncs.updatetutorial("roster")
+
+    #Default that represents no transaction that has taken place. -1 is failure and 1 is success
+    success = 0
+
+    #Default tab is first one
+    defaulttab = "Fire"
+
+    if request.method == "GET":
+        defaulttab = "Fire"
+        print("Defaulttab is set to fire")
+    #Handles chosen transactions
+    if request.method == 'POST':
+        print(f"Post request made!")
+        defaulttab = request.POST.get("defaulttab")
+
+        if (defaulttab == None):
+            defaulttab = "Fire"
+        
+        #Check if someone clicked on a character panel in the roster
+        try:
+            claimsingle = request.POST.get("claimsingle")
+            print(f"claimsingle is {claimsingle}")
+        except: 
+            print("Except triggered")
+            success = 0
+            defaulttab = "Fire"
+
+        #Otherwise process claiming for one character
+        else:
+            if (claimsingle == "True"):
+                defaulttab = "Fire"
+                try:
+                    charname = request.POST.get("charname")
+                except: 
+                    success = 0
+                else:
+                    typeandrarity = invfuncs.gettypeandrarity(charname)
+                    typing = typeandrarity["Type"]
+                    rarity = typeandrarity["Rarity"]
+                    acquired = invfuncs.getrostercharacterstatus(typing, rarity, charname, "Acquired")
+                    canclaim = invfuncs.getrostercharacterstatus(typing, rarity, charname, "Claimed")
+                    #Check if character has been acquired and can be claimed
+                    if (acquired, canclaim):
+                        currency = "Jewels"
+                        operation = "+"
+                        #Retrieve jewel reward for given character
+                        amount = invfuncs.newcharacterrewardamount(typeandrarity["Rarity"])
+                        #Update roster in tempfile
+                        invfuncs.updateroster(typing, rarity, charname, "Claimed")
+                        success = invfuncs.intbool(maketransaction(currency, operation, amount))
+                    else:
+                        defaulttab = "Fire"
+            else:
+                #Check if someone clicked on claim all rewards
+                try: 
+                    claimall = request.POST.get("claimall")
+                except:
+                    success = 0
+                    defaulttab = "Fire"
+                else:
+                    print("Can claim all")
+                    if (claimall == "True"):
+                        currency = "Jewels"
+                        operation = "+"
+                        #Retrieve jewel reward for given character. Function also updates roster in tempfile
+                        amount = invfuncs.updaterosterandcalcrewards()
+                        
+                        success = invfuncs.intbool(maketransaction(currency, operation, amount))
+                    else: 
+                        defaulttab = "Fire"
+
+    #Reinitialize to reflect changes
+    panel = filesfuncs.panelitems()
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    temproster = tempcontents["Contents"]["Chracter Collection"]
+    claimable = len(invfuncs.hasrewards())
+
+    context = {
+        "defaulttab": defaulttab,
+        "username": panel["Username"], 
+        "level": panel["Level"], 
+        "coins": panel["Coins"], 
+        "jewels": panel["Jewels"], 
+        "realmoney": panel["Real Money Spent"],
+        "temproster": temproster,
+        "claimable": claimable,
+        "success": success
+    } 
+   
+    return render(request, 'roster.html', context)

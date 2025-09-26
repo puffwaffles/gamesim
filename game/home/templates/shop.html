@@ -40,15 +40,15 @@
     <div class = "homemenu">
         <div class = "tablist">
             {% if defaulttab == "Coins" %}
-            <button class = "tabs" onclick = "displaypackagelist(event, 'Coins')" id = "defaulttab"> Coins</button>
-            <button class = "tabs" onclick = "displaypackagelist(event, 'Jewels')">Jewels</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Coins')" id = "defaulttab"> Coins</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Jewels')">Jewels</button>
             {% elif defaulttab == "Jewels" %}
-            <button class = "tabs" onclick = "displaypackagelist(event, 'Coins')" id = "Coins"> Coins</button>
-            <button class = "tabs" onclick = "displaypackagelist(event, 'Jewels')"  id = "defaulttab">Jewels</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Coins')"> Coins</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Jewels')"  id = "defaulttab">Jewels</button>
             {% endif %}
             
         </div>
-        <div id = "Coins" class = "packagelist">
+        <div id = "Coins" class = "itemlist">
 
             <form action = "{% url 'shop' %}" method = "POST">
                 {% csrf_token %}
@@ -75,15 +75,31 @@
                 <input type = "hidden" name = "amount1" value = "200">
                 <input type = "hidden" name = "currency2" value = "Coins">
                 <input type = "hidden" name = "operation2" value = "+">
-                <input type = "hidden" name = "amount2" value = "10000">
+                <input type = "hidden" name = "amount2" value = "500000">
                 <button class = "packages"> 
                     <p>500000 Coins</p>
                     <p>Cost: 200 Jewels</p>
                 </button>
             </form>
 
+            <form action = "{% url 'shop' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "transaction" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Coins">
+                <input type = "hidden" name = "currency1" value = "Jewels">
+                <input type = "hidden" name = "operation1" value = "-">
+                <input type = "hidden" name = "amount1" value = "350">
+                <input type = "hidden" name = "currency2" value = "Coins">
+                <input type = "hidden" name = "operation2" value = "+">
+                <input type = "hidden" name = "amount2" value = "1000000">
+                <button class = "packages"> 
+                    <p>1000000 Coins</p>
+                    <p>Cost: 350 Jewels</p>
+                </button>
+            </form>
+
         </div>
-        <div id = "Jewels" class = "packagelist">
+        <div id = "Jewels" class = "itemlist">
 
             <form action = "{% url 'shop' %}" method = "POST">
                 {% csrf_token %}
@@ -114,6 +130,22 @@
                 <button class = "packages"> 
                     <p>550 Jewels</p>
                     <p>Cost: $9.99</p>
+                </button>
+            </form>
+
+            <form action = "{% url 'shop' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "transaction" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Jewels">
+                <input type = "hidden" name = "currency1" value = "Real Money Spent">
+                <input type = "hidden" name = "operation1" value = "+">
+                <input type = "hidden" name = "amount1" value = "19.99">
+                <input type = "hidden" name = "currency2" value = "Jewels">
+                <input type = "hidden" name = "operation2" value = "+">
+                <input type = "hidden" name = "amount2" value = "1200">
+                <button class = "packages"> 
+                    <p>1200 Jewels</p>
+                    <p>Cost: $19.99</p>
                 </button>
             </form>
 

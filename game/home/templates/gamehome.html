@@ -24,31 +24,27 @@
             <button class = "bar" type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
         </form>
-        <form action = "{% url 'changeamount' %}" method = "POST">
-            {% csrf_token %}
-            <input type = "hidden" name = "funcname" value = "gamehome">
-            <input type = "hidden" name = "operation" value = "+">
-            <input type = "hidden" name = "item" value = "Jewels">
-            <input type = "hidden" name = "amount" value = "500">
-            <button class = "bar" type = "submit"><h4>Add Jewels</h4></button>
-            
-        </form>
         <form action = "{% url 'tutorial' %}" method = "Get">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
         </form>
+
     </ul>
     <div class = "homemenu">
         <form action = "{% url 'displayinventory' %}" method = "Get">
             {% csrf_token %}
             <button class = "homemenubutt" type = "submit"><h4>Inventory</h4></button>
         </form>
-        <form action = "{% url 'displayinventory' %}" method = "Get">
+        <form action = "{% url 'summon' %}" method = "Get">
             {% csrf_token %}
             <button class = "homemenubutt" type = "submit"><h4>Summon</h4></button>
         </form>
         <form action = "{% url 'shop' %}" method = "Get">
             {% csrf_token %}
             <button class = "homemenubutt" type = "submit"><h4>Shop</h4></button>
+        </form>
+        <form action = "{% url 'roster' %}" method = "Get">
+            {% csrf_token %}
+            <button class = "homemenubutt" type = "submit"><h4>Roster</h4></button>
         </form>
     </div>
 </body>

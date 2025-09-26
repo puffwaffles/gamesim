@@ -1,0 +1,118 @@
+{
+    "Basic Fire Water Wood 1 Summon": {
+        "Number of Summons": 1,
+        "Types": {
+            "Fire": "(1.0 / 3.0)",
+            "Water": "(1.0 / 3.0)",
+            "Wood": "(1.0 / 3.0)"
+        },
+        "Base Rarities": {
+            "1": 0.6,
+            "2": 0.3,
+            "3": 0.1
+        }
+    },
+    "Basic Fire Water Wood 10 Summon": {
+        "Number of Summons": 10,
+        "Types": {
+            "Fire": "(1.0 / 3.0)",
+            "Water": "(1.0 / 3.0)",
+            "Wood": "(1.0 / 3.0)"
+        },
+        "Base Rarities": {
+            "1": 0.6,
+            "2": 0.3,
+            "3": 0.1
+        },
+        "Pity Rarity": {
+            "2": 0.8,
+            "1": 0.2
+        }
+    },
+    "Rare Fire Water Wood 1 Summon": {
+        "Number of Summons": 1,
+        "Types": {
+            "Fire": "(1.0 / 3.0)",
+            "Water": "(1.0 / 3.0)",
+            "Wood": "(1.0 / 3.0)"
+        },
+        "Base Rarities": {
+            "3": 0.86,
+            "4": 0.13,
+            "5": 0.01
+        }
+    }, 
+    "Rare Fire Water Wood 10 Summon": {
+        "Number of Summons": 10,
+        "Types": {
+            "Fire": "(1.0 / 3.0)",
+            "Water": "(1.0 / 3.0)",
+            "Wood": "(1.0 / 3.0)"
+        },
+        "Base Rarities": {
+            "3": 0.86,
+            "4": 0.13,
+            "5": 0.01
+        },
+        "Pity Rarity": {
+            "2": 0.95,
+            "1": 0.05
+        }
+    },
+    "Basic Light Dark 1 Summon": {
+        "Number of Summons": 1,
+        "Types": {
+            "Light": 0.5,
+            "Dark": 0.5
+        },
+        "Base Rarities": {
+            "1": 0.6,
+            "2": 0.3,
+            "3": 0.1
+        }
+    },
+    "Basic Light Dark 10 Summon": {
+        "Number of Summons": 10,
+        "Types": {
+            "Light": 0.5,
+            "Dark": 0.5
+        },
+        "Base Rarities": {
+            "1": 0.6,
+            "2": 0.3,
+            "3": 0.1
+        },
+        "Pity Rarity": {
+            "2": 0.8,
+            "1": 0.2
+        }
+    },
+    "Rare Light Dark 1 Summon": {
+        "Number of Summons": 1,
+        "Types": {
+            "Light": 0.5,
+            "Dark": 0.5
+        },
+        "Base Rarities": {
+            "3": 0.86,
+            "4": 0.13,
+            "5": 0.01
+        }
+    }, 
+    "Rare Light Dark 10 Summon": {
+        "Number of Summons": 10,
+        "Types": {
+            "Light": 0.5,
+            "Dark": 0.5
+        },
+        "Base Rarities": {
+            "3": 0.86,
+            "4": 0.13,
+            "5": 0.01
+        },
+        "Pity Rarity": {
+            "2": 0.95,
+            "1": 0.05
+        }
+    }
+}

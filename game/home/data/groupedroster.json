@@ -1,10 +1,12 @@
 {
   "Fire": {
-    "1": {
-      "Flame Whisp": {
-        "Picture": "images/fire/flame_whisp.jpg",
+    "5": {},
+    "4": {},
+    "3": {
+      "Fire Spirit": {
+        "Picture": "images/fire/fire_spirit.jpg",
         "Type": "Fire",
-        "Rarity": 1
+        "Rarity": 3
       }
     },
     "2": {
@@ -14,22 +16,22 @@
         "Rarity": 2
       }
     },
-    "3": {
-      "Fire Spirit": {
-        "Picture": "images/fire/fire_spirit.jpg",
+    "1": {
+      "Flame Whisp": {
+        "Picture": "images/fire/flame_whisp.jpg",
         "Type": "Fire",
-        "Rarity": 3
+        "Rarity": 1
       }
-    },
-    "4": {},
-    "5": {}
+    }
   },
   "Water": {
-    "1": {
-      "Water Orb": {
-        "Picture": "images/water/water_orb.jpg",
+    "5": {},
+    "4": {},
+    "3": {
+      "Mermaid": {
+        "Picture": "images/water/mermaid.jpg",
         "Type": "Water",
-        "Rarity": 1
+        "Rarity": 3
       }
     },
     "2": {
@@ -39,22 +41,22 @@
         "Rarity": 2
       }
     },
-    "3": {
-      "Mermaid": {
-        "Picture": "images/water/mermaid.jpg",
+    "1": {
+      "Water Orb": {
+        "Picture": "images/water/water_orb.jpg",
         "Type": "Water",
-        "Rarity": 3
+        "Rarity": 1
       }
-    },
-    "4": {},
-    "5": {}
+    }
   },
   "Wood": {
-    "1": {
-      "Grass Spore": {
-        "Picture": "images/wood/grass_spore.jpg",
+    "5": {},
+    "4": {},
+    "3": {
+      "Flower Sprite": {
+        "Picture": "images/wood/flower_sprite.jpg",
         "Type": "Wood",
-        "Rarity": 1
+        "Rarity": 3
       }
     },
     "2": {
@@ -64,28 +66,26 @@
         "Rarity": 2
       }
     },
-    "3": {
-      "Flower Sprite": {
-        "Picture": "images/wood/flower_sprite.jpg",
+    "1": {
+      "Grass Spore": {
+        "Picture": "images/wood/grass_spore.jpg",
         "Type": "Wood",
-        "Rarity": 3
+        "Rarity": 1
       }
-    },
-    "4": {},
-    "5": {}
+    }
   },
   "Light": {
-    "1": {},
-    "2": {},
-    "3": {},
+    "5": {},
     "4": {},
-    "5": {}
+    "3": {},
+    "2": {},
+    "1": {}
   },
   "Dark": {
-    "1": {},
-    "2": {},
-    "3": {},
+    "5": {},
     "4": {},
-    "5": {}
+    "3": {},
+    "2": {},
+    "1": {}
   }
 }

@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Roster</title>
+    <link rel="stylesheet" href = "{% static 'css/game.css' %}">
+</head>
+<body>
+    <ul class = "panel">
+        <li class = "panelparts">{{username}}</li>
+        <li class = "panelparts">Level: {{level}}</li>
+        <li class = "panelparts">Coins: {{coins}}</li>
+        <li class = "panelparts">Jewels: {{jewels}}</li>
+        <li class = "panelparts">${{realmoney}}</li>
+    </ul>
+
+    <ul class = "menu">
+        <form action = "{% url 'gamehome' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
+        </form>
+        <form action = "{% url 'savetemp' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "funcname" value = "roster">
+            <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
+            <script src = "{% static 'js/script.js' %}"></script>
+        </form>
+        <form action = "{% url 'tutorial' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
+        </form>
+    </ul>
+
+    <div class = "homemenu">
+        <div class = "tablist">
+            {% if defaulttab == "Fire" %}
+            <button class = "tabs" onclick = "displayitemlist(event, 'Fire')" id = "defaulttab">Fire</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Water')">Water</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Wood')">Wood</button>
+            {% elif defaulttab == "Water" %}
+            <button class = "tabs" onclick = "displayitemlist(event, 'Fire')">Fire</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Water')" id = "defaulttab">Water</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Wood')">Wood</button>
+            {% elif defaulttab == "Wood" %}
+            <button class = "tabs" onclick = "displayitemlist(event, 'Fire')">Fire</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Water')">Water</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Wood')" id = "defaulttab">Wood</button>
+            {% endif %}
+            
+        </div>
+        <div id = "Fire" class = "itemlist">
+            {% if claimable > 0 %}
+            <form action = "{% url 'roster' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "claimall" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Fire">
+                
+                <button class = "claimall"  onclick = "allrewardsclaimed()"> 
+                    <p>Claim All Rewards</p>
+                </button>
+                <script src = "{% static 'js/script.js' %}"></script>
+            </form>
+            {% else %}
+            <button class = "claimall" disabled> 
+                <p>Claim All Rewards</p>
+            </button>
+            {% endif %}
+
+            {% for rarity, raritylists in temproster.Fire.items %}
+                {% for charnames, charinfo in raritylists.items %}
+                {% if charinfo.Claimed %}
+                    <button class = "rostercharacters" disabled> 
+                        <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                        {% if charinfo.Acquired %}
+                        <p>Obtained</p>    
+                        {% else %} 
+                        <p>Not Obtained</p>
+                        {% endif %}
+                    </button>
+                {% else %}  
+                    <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "claimsingle" value = "True">
+                        <input type = "hidden" name = "defaulttab" value = "Fire">
+                        <input type = "hidden" name = "charname" value = "{{charnames}}">
+                        
+                        <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
+                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                            <p>Obtained</p> 
+                        </button>
+                        <script src = "{% static 'js/script.js' %}"></script>
+                    </form>
+                {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <div id = "Water" class = "itemlist">
+
+            {% if claimable > 0 %}
+            <form action = "{% url 'roster' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "claimall" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Water">
+                
+                <button class = "claimall"  onclick = "allrewardsclaimed()"> 
+                    <p>Claim All Rewards</p>
+                </button>
+                <script src = "{% static 'js/script.js' %}"></script>
+            </form>
+            {% else %}
+            <button class = "claimall" disabled> 
+                <p>Claim All Rewards</p>
+            </button>
+            {% endif %}
+            
+            {% for rarity, raritylists in temproster.Water.items %}
+                {% for charnames, charinfo in raritylists.items %}
+                {% if charinfo.Claimed %}
+                    <button class = "rostercharacters" disabled> 
+                        <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                        {% if charinfo.Acquired %}
+                        <p>Obtained</p>    
+                        {% else %} 
+                        <p>Not Obtained</p>
+                        {% endif %}
+                    </button>
+                {% else %}  
+                    <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "claimsingle" value = "True">
+                        <input type = "hidden" name = "defaulttab" value = "Water">
+                        <input type = "hidden" name = "charname" value = "{{charnames}}">
+                        
+                        <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
+                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                            <p>Obtained</p> 
+                        </button>
+                        <script src = "{% static 'js/script.js' %}"></script>
+                    </form>
+                {% endif %}
+                {% endfor %}
+            {% endfor %}  
+
+        </div>
+
+        <div id = "Wood" class = "itemlist">
+
+            {% if claimable > 0 %}
+            <form action = "{% url 'roster' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "claimall" value = "True">
+                <input type = "hidden" name = "defaulttab" value = "Wood">
+                
+                <button class = "claimall"  onclick = "allrewardsclaimed()"> 
+                    <p>Claim All Rewards</p>
+                </button>
+                <script src = "{% static 'js/script.js' %}"></script>
+            </form>
+            {% else %}
+            <button class = "claimall" disabled> 
+                <p>Claim All Rewards</p>
+            </button>
+            {% endif %}
+            
+            {% for rarity, raritylists in temproster.Wood.items %}
+                {% for charnames, charinfo in raritylists.items %}
+                {% if charinfo.Claimed %}
+                    <button class = "rostercharacters" disabled> 
+                        <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                        {% if charinfo.Acquired %}
+                        <p>Obtained</p>    
+                        {% else %} 
+                        <p>Not Obtained</p>
+                        {% endif %}
+                    </button>    
+                {% else %}  
+                    <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
+                        {% csrf_token %}
+                        <input type = "hidden" name = "claimsingle" value = "True">
+                        <input type = "hidden" name = "defaulttab" value = "Wood">
+                        <input type = "hidden" name = "charname" value = "{{charnames}}">
+                        
+                        <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
+                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                            <p>Obtained</p> 
+                        </button>
+                        <script src = "{% static 'js/script.js' %}"></script>
+                    </form>
+                    
+                {% endif %}
+                {% endfor %}
+            {% endfor %}  
+
+        </div>
+
+    </div>
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>document.getElementById("defaulttab").click();</script>
+</body>

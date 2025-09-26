@@ -15,4 +15,7 @@ urlpatterns = [
     path('inventory/', views.displayinventory, name = "displayinventory"),
     path('release/', views.releasecharacter, name = "releasecharacter"),
     path('shop/', views.shop, name = "shop"),
+    path('summon/', views.summon, name = "summon"),
+    path('summonresults/', views.summonresults, name = "summonresults"),
+    path('roster/', views.roster, name = "roster"),
 ]

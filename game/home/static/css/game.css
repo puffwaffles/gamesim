@@ -98,22 +98,27 @@ button.bar {
 .inventory {
     position: fixed;
     bottom: 0;
-    overflow: scroll;
+    display: flex;
+    margin: 0;
     background: green;
     height: 10%;
-    width: 80%;
-    right: 0;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.characterlist {
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+	width: 90%
 }
 
 .minipic {
-    float: left;
+    display: inline-block;
 	list-style-type: none;
-	margin: 0;
 	padding: 0;
-}
-
-.minipic:hover {
-    cursor: pointer;
+    border-color: gold;
+    margin-right: 5px;
 }
 
 .minipic:active {
@@ -135,7 +140,7 @@ button.bar {
     padding-right: 20px;
 }
 
-.tabs:hover {
+.minipic:hover, .tabs:hover, .packages:hover {
     cursor: pointer;
 }
 
@@ -143,7 +148,7 @@ button.bar {
     background-color: rgb(54, 215, 255);
 }
 
-.packagelist {
+.itemlist {
     display: none;
     background-color: rgb(54, 215, 255);
     overflow-x: scroll;
@@ -155,9 +160,42 @@ button.bar {
 .packages {
     float: left;
 	list-style-type: none;
-	margin: 0;
+	margin: 20px;
 	padding: 10px;
     background-color: aliceblue;
     border-radius: 10px;
     border-color: black;
+}
+
+.summons {
+    opacity: 0;
+    transition-timing-function: ease-in;
+}
+
+.summonspace {
+    overflow: auto;
+    width: 40%;
+    margin-right: 20%;
+    float: right;
+}
+
+.rostercharacters {
+    display: inline-block;
+	list-style-type: none;
+	margin: 20px;
+    background-color: aliceblue;
+    border-radius: 0px 0px 10px 10px;
+    border-color: black;
+}
+
+.claimall {
+    display: block;
+    margin: 10px;
+    background-color: rgb(255, 179, 0);
+    border-radius: 10px;
+    border-color: black;
+}
+
+.rostercharacters:hover:enabled, .claimall:hover:enabled {
+    cursor: pointer;
 }

@@ -59,6 +59,7 @@
             <script src = "{% static 'js/script.js' %}">amounterror("coins");</script>
             {% endif%}
         </form>
+        <div class = "characterlist">
         {% for serial, info in inventorychars.items %}
         <form action = "{% url 'displayinventory' %}" method = "POST">
             {% csrf_token %}
@@ -67,7 +68,7 @@
             <button class = "minipic" name = "Picked" value = "{{info}}"><img src = "{% static info.Picture %}" width="50" height="60"></button>
         </form>
         {% endfor %}
-
+        </div>
     </div>
     
     {% endif %}

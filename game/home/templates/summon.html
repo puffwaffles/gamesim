@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Summon</title>
+    <link rel="stylesheet" href = "{% static 'css/game.css' %}">
+</head>
+<body>
+    <ul class = "panel">
+        <li class = "panelparts">{{username}}</li>
+        <li class = "panelparts">Level: {{level}}</li>
+        <li class = "panelparts">Coins: {{coins}}</li>
+        <li class = "panelparts">Jewels: {{jewels}}</li>
+        <li class = "panelparts">${{realmoney}}</li>
+    </ul>
+
+    <ul class = "menu">
+        <form action = "{% url 'gamehome' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
+        </form>
+        <form action = "{% url 'savetemp' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "funcname" value = "summon">
+            <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
+            <script src = "{% static 'js/script.js' %}"></script>
+        </form>
+        <form action = "{% url 'tutorial' %}" method = "Get">
+            {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
+        </form>
+    </ul>
+
+    {% if summonable == False %}
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>summonerror();</script>
+    {% else %}
+            <!-- Print transaction error if capacity requirement is satisfied -->
+        {% if success == -1 %}
+
+        <script src = "{% static 'js/script.js' %}"></script>
+        <script data-failedcurrency = "{{ failedcurrency }}">
+            const data = document.currentScript.dataset;
+            const failedcurrency = data.failedcurrency;
+            amounterror(failedcurrency);
+        </script>
+        {% endif%}
+    {% endif%}
+
+
+    <div class = "homemenu">
+        <form action = "{% url 'summon' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "transaction" value = "True">
+            <input type = "hidden" name = "summontype" value = "Basic Fire Water Wood 1 Summon">
+            <input type = "hidden" name = "currency1" value = "Coins">
+            <input type = "hidden" name = "operation1" value = "-">
+            <input type = "hidden" name = "amount1" value = "15000">
+            <button class = "packages"> 
+                <p>Basic Fire/Water/Wood 1-3* Summon</p>
+                <p>Cost: 15000 Coins</p>
+            </button>
+        </form>       
+        <form action = "{% url 'summon' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "transaction" value = "True">
+            <input type = "hidden" name = "summontype" value = "Basic Fire Water Wood 10 Summon">
+            <input type = "hidden" name = "currency1" value = "Coins">
+            <input type = "hidden" name = "operation1" value = "-">
+            <input type = "hidden" name = "amount1" value = "150000">
+            <button class = "packages"> 
+                <p>Basic Fire/Water/Wood 1-3* Summon</p>
+                <p>Cost: 150000 Coins</p>
+            </button>
+        </form>
+    </div>
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>document.getElementById("defaulttab").click();</script>
+</body>

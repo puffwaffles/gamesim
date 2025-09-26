@@ -69,6 +69,18 @@ def replacefile(contents, path):
         file.write(newfile)
     return contents
 
+#Needs to be here since we need to initialize roster while building a new file
+#Converts groupedroster.json into a roster dictionary that identifies acquired and nonaquired characters
+def developroster():
+    orgroster = getfile("groupedroster", r'data/')
+    #Iterate for each character and have them preset to not aquired (False)
+    for types in orgroster:
+        for i in range(1, 6):
+            for chars in orgroster[types][str(i)].keys():
+                orgroster[types][str(i)][chars]["Acquired"] = False
+                orgroster[types][str(i)][chars]["Claimed"] = False
+    return orgroster
+
 #Add save
 def makenewfile(saveslist, username):
     #Use highest existing number for save to ensure no duplicate save files
@@ -84,9 +96,12 @@ def makenewfile(saveslist, username):
         "Level": 1,
         "Coins": 100000,
         "Jewels": 500,
+        "Real Money Spent": 0,
         "Inventory": {},
         "Inventory Max Size": 10,
-        "Serial Number": 1
+        "Serial Number": 1,
+        "Tutorialsite": "actualhome",
+        "Chracter Collection": developroster()
     }
     #Update new saves list
     newsaveslist = saveslist
@@ -178,7 +193,8 @@ def createnewfile(saveslist):
             "Inventory": {},
             "Inventory Max Size": 20,
             "Serial Number": 1,
-            "Tutorialsite": "actualhome"
+            "Tutorialsite": "actualhome",
+            "Chracter Collection": developroster()
         }
         #Update new saves list
         newsaveslist = saveslist
