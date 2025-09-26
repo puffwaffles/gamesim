@@ -22,11 +22,15 @@
         },
         "2": {
             "Title": "Summon",
-            "Text": "Work in Progress"
+            "Text": "This button takes you to the summoning area. In the summoning area you can choose to summon more characters to add to your inventory. You can summon 1 or 10 at a time. If you do not have enough inventory space for the summoned character batch, you will not be able to summon anything. When you summon characters, you will be taken to summon results page. Press the back to summon button to return back to the summon page."
         },
         "3": {
             "Title": "Shop",
             "Text": "This button takes you to the shop. In the shop you can by various currencies and other items. Some items will use \"Real money\", which represents real life money being spent."
+        },
+        "4": {
+            "Title": "Roster",
+            "Text": "This button takes you to the character roster. In the character roster contains all existing characters in the game. These characters are grouped by type and sorted by rarity in descending order. For each character, you can see if you have obtained it or not. When you obtain a new character, you can claim a reward by clicking on the character icon in the roster. You can also claim all rewards by clicking the claim all rewards button at the top. You can only claim rewards once per character."
         }
     },
     "3": {
