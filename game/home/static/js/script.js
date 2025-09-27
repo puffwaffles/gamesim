@@ -23,7 +23,11 @@ function rewardclaimed() {
     alert("Reward successfully claimed!");
 }
 
-//Provides tabs for shop
+function releasesuccess() {
+    alert("Character successfully released!");
+}
+
+//Provides content for tabs
 function displayitemlist(event, packagetype) {
     var i, itemlist, tabs;
     itemlist = document.getElementsByClassName("itemlist");
@@ -36,9 +40,16 @@ function displayitemlist(event, packagetype) {
     }
     document.getElementById(packagetype).style.display = "block";
     event.currentTarget.className += " active";
+    getdefault(packagetype);
 
 }
 
+//Retrieves tab that is active
+function getdefault(tabname) {
+    document.getElementById("defaultname").value = tabname;
+}
+
+//Makes the summoned characters appear one by one
 function showslowly(index) {
     summon = document.getElementsByClassName("summons");
     if (index < summon.length) {

@@ -18,9 +18,12 @@
         <form action = "{% url 'gamehome' %}" method = "Get">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
         </form>
-        <form action = "{% url 'savetemp' %}" method = "POST">
+        <form action = "{% url 'displayinventory' %}" method = "POST">
             {% csrf_token %}
-            <input type = "hidden" name = "funcname" value = "displayinventory">
+            <input type = "hidden" name = "savetemp" value = "True">
+            {% if showselect %}
+            <input type = "hidden" name = "Pickserial" value = "{{selected.Serial}}">
+            {% endif %}
             <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
         </form>
@@ -28,6 +31,12 @@
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
         </form>
     </ul>
+
+    {% if released %}
+    <script src = "{% static 'js/script.js' %}"></script>
+    <script>releasesuccess();</script>
+    {% endif%}
+
     {% if showselect is False %}
     <div class = "homemenu">
     <h1>You have no characters in your inventory. Summon to get more!</h1>
@@ -40,11 +49,13 @@
         <div class = "infopanel">
             <h1>{{selected.Name}}</h1>
             <h2>{{selected.Type}}</h2>
-            <h2>{{selected.Rarity}}</h2>
-            <form action = "{% url 'releasecharacter' %}" method = "POST">
+            {% for stars in selected.Raritylist %}
+            <span> &#11088; </span>
+            {% endfor %}
+            <form action = "{% url 'displayinventory' %}" method = "POST">
                 {% csrf_token %}
                 <input type = "hidden" name = "Pickserial" value = "{{selected.Serial}}">
-                <input type = "hidden" name = "funcname" value = "displayinventory">
+                <input type = "hidden" name = "released" value = "True">
                 <button type = "submit">Release Character</button>
             </form>
         </div>
@@ -65,7 +76,11 @@
             {% csrf_token %}
             <input type = "hidden" name = "Picked" value = "{{info}}">
             <input type = "hidden" name = "Pickserial" value = "{{serial}}">
+            {% if serial ==  selected.Serial %}
+            <button class = "activeminipic" name = "Picked" value = "{{info}}"><img src = "{% static info.Picture %}" width="50" height="60"></button>
+            {% else %}
             <button class = "minipic" name = "Picked" value = "{{info}}"><img src = "{% static info.Picture %}" width="50" height="60"></button>
+            {% endif%}
         </form>
         {% endfor %}
         </div>

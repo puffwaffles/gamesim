@@ -18,9 +18,10 @@
         <form action = "{% url 'gamehome' %}" method = "Get">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
         </form>
-        <form action = "{% url 'savetemp' %}" method = "POST">
+        <form action = "{% url 'roster' %}" method = "POST">
             {% csrf_token %}
-            <input type = "hidden" name = "funcname" value = "roster">
+            <input type = "hidden" name = "savetemp" value = "True">
+            <input type = "hidden" name = "defaulttab" id = "defaultname" value = {{defaulttab}}>
             <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
         </form>
@@ -66,31 +67,35 @@
 
             {% for rarity, raritylists in temproster.Fire.items %}
                 {% for charnames, charinfo in raritylists.items %}
-                {% if charinfo.Claimed %}
+                    {% if charinfo.Acquired %}
+                        {% if charinfo.Claimed %}
+                        <button class = "rostercharacters" disabled> 
+                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                            <p>Obtained</p>    
+                        </button>
+                        {% else %}
+                        <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
+                            {% csrf_token %}
+                            <input type = "hidden" name = "claimsingle" value = "True">
+                            <input type = "hidden" name = "defaulttab" value = "Fire">
+                            <input type = "hidden" name = "charname" value = "{{charnames}}">
+                            
+                            <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
+                                <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                                <p>Obtained</p> 
+                            </button>
+                            <script src = "{% static 'js/script.js' %}"></script>
+                        </form>
+                        {% endif %}        
+                    {% else %}  
                     <button class = "rostercharacters" disabled> 
                         <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
-                        {% if charinfo.Acquired %}
-                        <p>Obtained</p>    
-                        {% else %} 
-                        <p>Not Obtained</p>
-                        {% endif %}
-                    </button>
-                {% else %}  
-                    <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
-                        {% csrf_token %}
-                        <input type = "hidden" name = "claimsingle" value = "True">
-                        <input type = "hidden" name = "defaulttab" value = "Fire">
-                        <input type = "hidden" name = "charname" value = "{{charnames}}">
-                        
-                        <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
-                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
-                            <p>Obtained</p> 
-                        </button>
-                        <script src = "{% static 'js/script.js' %}"></script>
-                    </form>
-                {% endif %}
+                        <p>Unobtained</p>
+                    </button>  
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
+
         </div>
 
         <div id = "Water" class = "itemlist">
@@ -114,31 +119,34 @@
             
             {% for rarity, raritylists in temproster.Water.items %}
                 {% for charnames, charinfo in raritylists.items %}
-                {% if charinfo.Claimed %}
+                    {% if charinfo.Acquired %}
+                        {% if charinfo.Claimed %}
+                        <button class = "rostercharacters" disabled> 
+                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                            <p>Obtained</p>    
+                        </button>
+                        {% else %}
+                        <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
+                            {% csrf_token %}
+                            <input type = "hidden" name = "claimsingle" value = "True">
+                            <input type = "hidden" name = "defaulttab" value = "Water">
+                            <input type = "hidden" name = "charname" value = "{{charnames}}">
+                            
+                            <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
+                                <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                                <p>Obtained</p> 
+                            </button>
+                            <script src = "{% static 'js/script.js' %}"></script>
+                        </form>
+                        {% endif %}        
+                    {% else %}  
                     <button class = "rostercharacters" disabled> 
                         <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
-                        {% if charinfo.Acquired %}
-                        <p>Obtained</p>    
-                        {% else %} 
-                        <p>Not Obtained</p>
-                        {% endif %}
-                    </button>
-                {% else %}  
-                    <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
-                        {% csrf_token %}
-                        <input type = "hidden" name = "claimsingle" value = "True">
-                        <input type = "hidden" name = "defaulttab" value = "Water">
-                        <input type = "hidden" name = "charname" value = "{{charnames}}">
-                        
-                        <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
-                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
-                            <p>Obtained</p> 
-                        </button>
-                        <script src = "{% static 'js/script.js' %}"></script>
-                    </form>
-                {% endif %}
+                        <p>Unobtained</p>
+                    </button>  
+                    {% endif %}
                 {% endfor %}
-            {% endfor %}  
+            {% endfor %} 
 
         </div>
 
@@ -163,32 +171,34 @@
             
             {% for rarity, raritylists in temproster.Wood.items %}
                 {% for charnames, charinfo in raritylists.items %}
-                {% if charinfo.Claimed %}
+                    {% if charinfo.Acquired %}
+                        {% if charinfo.Claimed %}
+                        <button class = "rostercharacters" disabled> 
+                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                            <p>Obtained</p>    
+                        </button>
+                        {% else %}
+                        <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
+                            {% csrf_token %}
+                            <input type = "hidden" name = "claimsingle" value = "True">
+                            <input type = "hidden" name = "defaulttab" value = "Wood">
+                            <input type = "hidden" name = "charname" value = "{{charnames}}">
+                            
+                            <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
+                                <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
+                                <p>Obtained</p> 
+                            </button>
+                            <script src = "{% static 'js/script.js' %}"></script>
+                        </form>
+                        {% endif %}        
+                    {% else %}  
                     <button class = "rostercharacters" disabled> 
                         <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
-                        {% if charinfo.Acquired %}
-                        <p>Obtained</p>    
-                        {% else %} 
-                        <p>Not Obtained</p>
-                        {% endif %}
-                    </button>    
-                {% else %}  
-                    <form action = "{% url 'roster' %}" method = "POST" style = "display: inline-block;">
-                        {% csrf_token %}
-                        <input type = "hidden" name = "claimsingle" value = "True">
-                        <input type = "hidden" name = "defaulttab" value = "Wood">
-                        <input type = "hidden" name = "charname" value = "{{charnames}}">
-                        
-                        <button class = "rostercharacters"  onclick = "rewardclaimed()"> 
-                            <img src = "{% static charinfo.Picture %}" width="50" height="60">                            
-                            <p>Obtained</p> 
-                        </button>
-                        <script src = "{% static 'js/script.js' %}"></script>
-                    </form>
-                    
-                {% endif %}
+                        <p>Unobtained</p>
+                    </button>  
+                    {% endif %}
                 {% endfor %}
-            {% endfor %}  
+            {% endfor %}
 
         </div>
 

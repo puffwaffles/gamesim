@@ -18,9 +18,9 @@
         <form action = "{% url 'actualhome' %}" method = "Get">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Menu</h4></button>
         </form>
-        <form action = "{% url 'savetemp' %}" method = "POST">
+        <form action = "{% url 'gamehome' %}" method = "POST">
             {% csrf_token %}
-            <input type = "hidden" name = "funcname" value = "gamehome">
+            <input type = "hidden" name = "savetemp" value = "True">
             <button class = "bar" type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
         </form>

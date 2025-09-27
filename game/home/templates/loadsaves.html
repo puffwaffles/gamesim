@@ -11,8 +11,9 @@
         <h1 style = "color: white">Load Saves</h1>
         <h2 style = "color: white">Existing saves</h2>
         {% for save in saves %}
-        <form action = "{% url 'inittemp' %}" method = "POST">
+        <form action = "{% url 'gamehome' %}" method = "POST">
             {% csrf_token %}
+            <input type = "hidden" name = "tempinit" value = "True">
             <input type = "hidden" name = "savename" value = "{{save}}">
             <button class = "menu_button" name = "savename" value = "{{save}}"><h1>{{save}}</h1></button>
         </form>

@@ -121,9 +121,12 @@ button.bar {
     margin-right: 5px;
 }
 
-.minipic:active {
-    border-color: black;
-    border: 5px;
+.activeminipic {
+    display: inline-block;
+	list-style-type: none;
+	padding: 0;
+    border-color: rgba(0, 162, 255, 0.997);
+    margin-right: 5px;
 }
 
 .tablist {
@@ -186,6 +189,7 @@ button.bar {
     background-color: aliceblue;
     border-radius: 0px 0px 10px 10px;
     border-color: black;
+    width: 90px;
 }
 
 .claimall {

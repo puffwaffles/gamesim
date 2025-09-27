@@ -18,9 +18,10 @@
         <form action = "{% url 'gamehome' %}" method = "Get">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Back To Home Menu</h4></button>
         </form>
-        <form action = "{% url 'savetemp' %}" method = "POST">
+        <form action = "{% url 'shop' %}" method = "POST">
             {% csrf_token %}
-            <input type = "hidden" name = "funcname" value = "shop">
+            <input type = "hidden" name = "savetemp" value = "True">
+            <input type = "hidden" name = "defaulttab" id = "defaultname" value = {{defaulttab}}>
             <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
         </form>
@@ -41,9 +42,9 @@
         <div class = "tablist">
             {% if defaulttab == "Coins" %}
             <button class = "tabs" onclick = "displayitemlist(event, 'Coins')" id = "defaulttab"> Coins</button>
-            <button class = "tabs" onclick = "displayitemlist(event, 'Jewels')">Jewels</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Jewels')" value = "Jewels">Jewels</button>
             {% elif defaulttab == "Jewels" %}
-            <button class = "tabs" onclick = "displayitemlist(event, 'Coins')"> Coins</button>
+            <button class = "tabs" onclick = "displayitemlist(event, 'Coins')"  value = "Coins"> Coins</button>
             <button class = "tabs" onclick = "displayitemlist(event, 'Jewels')"  id = "defaulttab">Jewels</button>
             {% endif %}
             

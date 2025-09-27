@@ -214,7 +214,7 @@ def updatetempinv(charname):
 def serialgetrarity(serial):
     rarity = 0
     numchars = len(filesfuncs.gettempcomponent("Inventory"))
-    if (numchars > 0):
+    if (numchars > 0 and serial.isnumeric()):
         tempcontents = filesfuncs.getfile("temp", r'temp file/')
         if (serial in tempcontents["Contents"]["Inventory"]):
             rarity = tempcontents["Contents"]["Inventory"][serial]["Rarity"]
@@ -345,8 +345,11 @@ def hasrewards():
         for i in range(1, 6):
             for charname in temproster[types][str(i)].keys():
                 charinfo = [charname, types, str(i)]
-                if (getrostercharacterstatus(types, str(i), charname, "Claimed") == False):
+                aquired = getrostercharacterstatus(types, str(i), charname, "Acquired")
+                claims = getrostercharacterstatus(types, str(i), charname, "Claimed")
+                if (aquired == True and claims == False):
                     claimable.append(charinfo)
+    print(len(claimable))
     return claimable
 
 
