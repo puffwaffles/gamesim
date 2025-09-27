@@ -10,6 +10,7 @@ import json
 import os
 from . import filesfuncs
 from . import invfuncs
+from . import loginfuncs
 import random
 import ast
 
@@ -32,6 +33,89 @@ def home(request):
     tempfile = filesfuncs.cleartemp()
     template = loader.get_template('begin.html')
     return HttpResponse(template.render())
+
+#Prompts user for either login or signup
+def promptaccount(request):
+    template = loader.get_template('account.html')
+    return HttpResponse(template.render())
+
+#Provides signin page
+@csrf_protect
+def signup(request):
+    #Success denotes if new account was successfully created. 0 is uncreated, 1 is success and 2 - 5 denote error 
+    success = 0
+    username = ""
+    password = ""
+
+    #Error codes: 2-> Username already taken, 3-> Missing username, 4-> Missing password, 5-> Missing username and password
+
+    methods = ['Get', 'POST']
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        #Check if there were issues with getting username and password
+        if ((username == None or username == "") and (password != None or password != "")):
+            success = 3
+        elif ((username != None or username != "") and (password == None or password == "")):
+            success = 4
+        elif((username == None or username == "") and (password == None or password == "")):
+            success = 5
+        else:
+            taken = loginfuncs.checkifuserexists(username)
+            if (taken == False):
+                loginfuncs.adduser(username, password)
+                loginfuncs.createuserfolder(username)
+                success = 1
+            else:
+                success = 2
+    context = {
+        "username": username,
+        "password": password,
+        "success": success
+    }
+    return render(request, 'signup.html', context)
+
+
+
+#Provides login page
+def login(request):
+    #Success denotes if new account was successfully created. 0 is uncreated, 1 is success and 2 - 5 denote error 
+    success = 0
+    username = ""
+    password = ""
+
+    #Error codes: 2-> Wrong username/password, 3-> Missing username, 4-> Missing password, 5-> Missing username and password
+
+    methods = ['Get', 'POST']
+    if request.method == 'POST':
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        #Check if there were issues with getting username and password
+        if ((username == None or username == "") and (password != None or password != "")):
+            success = 3
+        elif ((username != None or username != "") and (password == None or password == "")):
+            success = 4
+        elif((username == None or username == "") and (password == None or password == "")):
+            success = 5
+        else:
+            correct = loginfuncs.verifylogin(username, password)
+            if (correct == True):
+                success = 1
+            else:
+                success = 2
+    if (success == 1):
+        context = {
+            "username": username
+        }
+        return actualhome(request)
+    else:
+        context = {
+            "username": username,
+            "password": password,
+            "success": success
+        }
+        return render(request, 'login.html', context)
+
 
 #Home-> Allows you to access load saves, create a save and delete a save functions
 def actualhome(request):
@@ -88,6 +172,7 @@ def inittemp(savename):
     tempfile = filesfuncs.updatetemp(savename, newcontents)
     pass  
 
+#Allows you to access your saves
 @csrf_protect
 def gamehome(request):
 
@@ -121,21 +206,6 @@ def gamehome(request):
     return render(request, 'gamehome.html', context)
 
 #Update current save to temp contents
-"""
-@csrf_protect
-def savetemp(request):
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    savedfile = filesfuncs.updatesave(tempcontents)
-
-    nextfunc = gamehome
-
-    if request.method == 'POST':
-        funcname = request.POST.get("funcname")
-    
-        nextfunc = getview(funcname)
-
-    return nextfunc(request)
-"""
 def savetemp():
     tempcontents = filesfuncs.getfile("temp", r'temp file/')
     savedfile = filesfuncs.updatesave(tempcontents)
@@ -179,40 +249,6 @@ def checktransaction(currency, amount):
         success = True
     return success
 
-#Testing purposes for adding to jewels amount
-@csrf_protect
-def changeamount(request):
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    savename = tempcontents["Save Name"]
-    nextfunc = gamehome
-
-    if request.method == 'POST':
-        funcname = request.POST.get("funcname")
-        operation = request.POST.get("operation")
-        item = request.POST.get("item")
-        amount = request.POST.get("amount")
-
-        tempval = tempcontents["Contents"][item]
-        
-        match operation:
-            case "+":
-                tempcontents["Contents"][item] = tempcontents["Contents"][item] + int(amount)
-            case "-":
-                tempcontents["Contents"][item] = tempcontents["Contents"][item] - int(amount)
-            case "*":
-                tempcontents["Contents"][item] = int(float(tempcontents["Contents"][item]) * float(amount))
-            case _:
-                tempcontents["Contents"][item] = int(amount)
-
-        if (tempcontents["Contents"][item] < 0):
-            tempcontents["Contents"][item] = tempval
-
-        tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
-
-        nextfunc = getview(funcname)
-
-    return nextfunc(request)
-
 #Allows user to select a save file to start playing
 def loadsaves(request):
     methods = ['Get']
@@ -241,38 +277,7 @@ def createsave(request):
             error = True
     return render(request, 'createsave.html', {"saves": saveslist, "error": error,  "create": create, "user": user})
 
-"""
-@csrf_protect
-def releasecharacter(request):
-    nextfunc = displayinventory
-    funcname = "displayinventory"
-    methods = ['POST']
-    currency = "Coins"
-    amount = 1000
-    operation = "+"
-
-    if request.method == 'POST':
-        serial = request.POST.get("Pickserial")
-        rarity = invfuncs.serialgetrarity(serial)
-        if (rarity < 1):
-            amount = 0
-            maketransaction(item, operation, amount)
-        elif (rarity < 3):
-            amount = amount + random.randint(0, int(amount / 2))
-            maketransaction(currency, operation, amount)
-        else:
-            currency = "Jewels"
-            amount = 10 * rarity
-            amount = amount + random.randint(0, int(amount / rarity))
-            maketransaction(currency, operation, amount)
-
-
-        success = invfuncs.release(serial) 
-        nextfunc = getview(funcname)
-
-
-    return nextfunc(request)
-    """
+#Handles reward giving for releasing characters
 def releasecharacter(serial):
     currency = "Coins"
     amount = 1000
@@ -287,13 +292,26 @@ def releasecharacter(serial):
     elif (rarity < 3):
         amount = amount + random.randint(0, int(amount / 2))
         maketransaction(currency, operation, amount)
+        temp = removecharacter(serial)
     else:
         currency = "Jewels"
         amount = 10 * rarity
         amount = amount + random.randint(0, int(amount / rarity))
         maketransaction(currency, operation, amount)
+        temp = removecharacter(serial)
 
     return success
+
+#Handles removing character given serial number
+def removecharacter(serial):
+    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    savename = tempcontents["Save Name"]
+    inventory = tempcontents["Contents"]["Inventory"]
+    if (serial in inventory):
+        del inventory[serial]
+    tempcontents["Contents"]["Inventory"] = inventory
+    tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
+    return tempfile
 
 #Displays the inventory page
 @csrf_protect

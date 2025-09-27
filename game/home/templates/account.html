@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Before Starting</title>
+    <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
+</head>
+<body>
+    <div class = "tutorial_box">
+        <div class = "middle">
+            <h1>Are you a new user? Sign up for a new account and login to get started. Otherwise, proceed to login.</h1>
+            <form action = "{% url 'signup' %}" method = "GET">
+                {% csrf_token %}
+                <button class = "menu_button_bott_left" type = "submit"><h1>Sign Up</h1></button>
+            </form>
+            <form action = "{% url 'login' %}" method = "GET">
+                {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Log In</h1></button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

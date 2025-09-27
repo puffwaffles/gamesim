@@ -285,7 +285,7 @@ def panelitems():
     return panel
 
 def updatetutorial(viewname):
-    tempcontents = f=getfile("temp", r'temp file/')
+    tempcontents = getfile("temp", r'temp file/')
     savename = tempcontents["Save Name"]
     tempcontents["Contents"]["Tutorialsite"] = viewname
     tempfile = updatetemp(savename, tempcontents["Contents"])

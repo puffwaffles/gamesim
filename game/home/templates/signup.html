@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign up</title>
+    <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class = "tutorial_box">
+        <div class = "middle">
+            <h1>Please enter your username and password below:</h1>
+            <form action = "{% url 'signup' %}" method = "POST" style = "margin: 40px;">
+                {% csrf_token %}
+                <p style = "text-align: left;">Username: 
+                <input type="text" name = "username" value="">
+                </p>
+                <p style = "text-align: left;"> Password: 
+                <input type="password" name = "password" id="passwordtext" value="" autocomplete="off"> 
+                <button type="button" onclick = "togglepassword()"><i id  = "eyeicon" class = "bi bi-eye-slash"></i></button> 
+                <script src = "{% static 'js/script.js' %}"></script>
+                </p>
+                <button type="submit" value="Enter">Enter</button>
+            </form>
+            {% if success == 1 %}
+            <p>New user {{username}} successfully created!</p> 
+            {% elif success == 2 %}
+            <p>Username {{username}} is already taken!</p> 
+            {% elif success == 3 %}
+            <p>Missing username!</p> 
+            {% elif success == 4 %}
+            <p>Missing password!</p> 
+            {% elif success == 5 %}
+            <p>Missing username and password!</p> 
+            {% endif %}
+            <form action = "{% url 'promptaccount' %}" method = "GET">
+                {% csrf_token %}
+                <button class = "menu_button_bott_left" type = "submit"><h1>Go Back</h1></button>
+            </form>
+            <form action = "{% url 'login' %}" method = "GET">
+                {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Log In</h1></button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

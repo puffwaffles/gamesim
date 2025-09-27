@@ -27,6 +27,25 @@ function releasesuccess() {
     alert("Character successfully released!");
 }
 
+//Toggles password
+function togglepassword() {
+    var visibility;
+    visibility = document.getElementById("passwordtext");
+    if (visibility.type === "text") {
+        visibility.type = "password";
+        icon = document.getElementById("eyeicon");
+        icon.classList.remove("bi", "bi-eye");
+        icon.classList.add("bi", "bi-eye-slash");
+        
+    }
+    else {
+        visibility.type = "text";
+        icon = document.getElementById("eyeicon");
+        icon.classList.remove("bi", "bi-eye-slash");
+        icon.classList.add("bi", "bi-eye");
+    }
+}
+
 //Provides content for tabs
 function displayitemlist(event, packagetype) {
     var i, itemlist, tabs;

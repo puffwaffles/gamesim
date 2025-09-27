@@ -16,6 +16,9 @@
             <form action = "{% url 'actualhome' %}" method = "GET">
                 {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>No</h1></button>
             </form>
+            <form action = "{% url 'promptaccount' %}" method = "GET">
+                {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Test Accounts</h1></button>
+            </form>
         </div>
     </div>
 </body>
