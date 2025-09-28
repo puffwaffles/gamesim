@@ -7,17 +7,22 @@
 </head>
 <body>
     <div class = "middle">
-        {% if saves|length > 0 %}
+        {% if size > 0 %}
         <h1 style = "color: white">Load Saves</h1>
         <h2 style = "color: white">Existing saves</h2>
-        {% for save in saves %}
+        {% for save, savecontent in saves.items %}
+        {% if savecontent == None %}
+        <span style = "display: block;">
+        <button class = "menu_button" name = "savename" disabled><h1>Unused Save</h1></button>
+        </span>
+        {% else %}
         <form action = "{% url 'gamehome' %}" method = "POST">
             {% csrf_token %}
             <input type = "hidden" name = "tempinit" value = "True">
             <input type = "hidden" name = "savename" value = "{{save}}">
             <button class = "menu_button" name = "savename" value = "{{save}}"><h1>{{save}}</h1></button>
         </form>
-        
+        {% endif %}
         {% endfor %}
         {% else %}
         <h2 style = "color: white">There are no saves available</h2>

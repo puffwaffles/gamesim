@@ -6,29 +6,23 @@
     <link rel="stylesheet" href = "{% static 'css/menu.css' %}">
 </head>
 <body>
-    <h1 style = "color: white">Delete Saves</h1>
-    {% if saves|length == 0 %}
-    <h1>No saves available to delete!</h1>
-    {% else %}
-    <h1>Please select a save to delete</h1>
-    <form action = "{% url 'deletesave' %}" method = "POST" id = "saveform">
-        {% csrf_token %}
-        <label for = "saves">Saves that can be deleted: </label>
-        <select name = "savefile" form = "saveform">
-            {% for save in saves %}
-            <option value = "{{save}}">{{save}}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" value="Enter">Enter</button>
-    </form>
-    
-    {% endif %}
-    {% if delete %}
-    <p>Save file {{file}} successfully deleted!</p> 
-    {% endif %}
-
-    <form action = "{% url 'actualhome' %}" method = "Get">
-        {% csrf_token %}<button class = "menu_button"  type = "submit"><h1>Back To Menu</h1></button>
-    </form>
+    <div class = "middle">
+        <h1 style = "color: white">Create Saves</h1>
+        {% if size == 0 %}
+        <h1>There are no saves to delete!</h1>
+        {% else %}
+        <h1>You can pick one of these saves to delete</h1>
+        {% for save, savecontent in saves.items %}
+        <form action = "{% url 'deletesave' %}" method = "POST">
+            {% csrf_token %}    
+            <input type = "hidden" name = "savename" value = "{{save}}">
+            <button class = "menu_button" name = "savename" value = "{{save}}"><h1>{{save}}</h1></button>    
+        </form>
+        {% endfor %}
+        {% endif %}
+        <form action = "{% url 'actualhome' %}" method = "Get">
+            {% csrf_token %}<button class = "menu_button"  type = "submit"><h1>Back To Menu</h1></button>
+        </form>
+    </div>
 </body>
 </html>

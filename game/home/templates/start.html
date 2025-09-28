@@ -8,17 +8,24 @@
 <body>
     <div class = "middle">
         <h1 style = "color: white" >Main Menu</h1>
+        <h1 style = "color: white" >Welcome {{username}}!</h1>
         <form action = "{% url 'loadsaves' %}" method = "GET">
-            {% csrf_token %}<button class = "menu_button" type = "submit"><h1>Load Saves</h1></button>
+            <button class = "menu_button"><h1>Load Saves</h1></button>
         </form>
         <form action = "{% url 'createsave' %}" method = "GET">
-            {% csrf_token %}<button class = "menu_button"><h1>Create New Save</h1></button>
+            <button class = "menu_button"><h1>Create New Save</h1></button>
         </form>
         <form action = "{% url 'deletesave' %}" method = "GET">
             <button class = "menu_button"><h1>Delete A Save</h1></button>
         </form>
         <form action = "{% url 'promptaccount' %}" method = "GET">
             <button class = "menu_button"><h1>Logout</h1></button>
+        </form>
+        <form action = "{% url 'promptaccount' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "deleted" value = "True">
+            <input type = "hidden" name = "username" value = "{{username}}">
+            <button class = "menu_button" type = "submit"><h1>Delete Account</h1></button>
         </form>
     </div>
 </body>

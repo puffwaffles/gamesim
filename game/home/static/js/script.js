@@ -73,6 +73,6 @@ function showslowly(index) {
     summon = document.getElementsByClassName("summons");
     if (index < summon.length) {
         summon[index].style.opacity = 1;
-        setTimeout(() => showslowly(index + 1), 1000);
+        setTimeout(() => showslowly(index + 1), 500);
     }
 }

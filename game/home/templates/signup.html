@@ -9,7 +9,7 @@
 <body>
     <div class = "tutorial_box">
         <div class = "middle">
-            <h1>Please enter your username and password below:</h1>
+            <h1>Please enter a new username and password below:</h1>
             <form action = "{% url 'signup' %}" method = "POST" style = "margin: 40px;">
                 {% csrf_token %}
                 <p style = "text-align: left;">Username: 

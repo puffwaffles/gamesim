@@ -11,13 +11,19 @@ import os
 from . import filesfuncs
 from . import invfuncs
 from . import loginfuncs
+from . import changefuncs
 import random
 import ast
+from django.urls import reverse
+from django.core.cache import cache
 
 #Used to grab the appropriate function given a view name
 def getview(viewname):
     views = {
         "home": home,
+        "promptaccount": promptaccount,
+        "signup": signup,
+        "login": login,
         "actualhome": actualhome,
         "gamehome": gamehome,
         "displayinventory": displayinventory,
@@ -30,18 +36,30 @@ def getview(viewname):
 
 #Shows up first to offer tutorial. More like a pseudo home. See actualhome for the actual home screen
 def home(request):
-    tempfile = filesfuncs.cleartemp()
+    #keep track of webpage location
+    request.session['location'] = 'home'
     template = loader.get_template('begin.html')
     return HttpResponse(template.render())
 
 #Prompts user for either login or signup
 def promptaccount(request):
+    deleted = "False"
+    if request.method == 'POST':
+        deleted = request.POST.get("deleted")
+        username = request.POST.get("username")
+        if deleted == "True" and username != None:
+            print("hello")
+            loginfuncs.deleteuser(username)
+    #keep track of webpage location
+    request.session['location'] = 'promptaccount'
     template = loader.get_template('account.html')
     return HttpResponse(template.render())
 
 #Provides signin page
 @csrf_protect
 def signup(request):
+    #keep track of webpage location
+    request.session['location'] = 'signup'
     #Success denotes if new account was successfully created. 0 is uncreated, 1 is success and 2 - 5 denote error 
     success = 0
     username = ""
@@ -63,22 +81,19 @@ def signup(request):
         else:
             taken = loginfuncs.checkifuserexists(username)
             if (taken == False):
-                loginfuncs.adduser(username, password)
                 loginfuncs.createuserfolder(username)
+                username = loginfuncs.adduser(username, password)
                 success = 1
             else:
                 success = 2
-    context = {
-        "username": username,
-        "password": password,
-        "success": success
-    }
+    context = {"username": username, "password": password, "success": success}
     return render(request, 'signup.html', context)
 
-
-
 #Provides login page
+@csrf_protect
 def login(request):
+    #keep track of webpage location
+    request.session['location'] = 'login'
     #Success denotes if new account was successfully created. 0 is uncreated, 1 is success and 2 - 5 denote error 
     success = 0
     username = ""
@@ -104,9 +119,8 @@ def login(request):
             else:
                 success = 2
     if (success == 1):
-        context = {
-            "username": username
-        }
+        #keep track of username to use later
+        request.session['username'] = username
         return actualhome(request)
     else:
         context = {
@@ -118,12 +132,76 @@ def login(request):
 
 
 #Home-> Allows you to access load saves, create a save and delete a save functions
+@csrf_protect
 def actualhome(request):
-    methods = ['Get']
+    #keep track of webpage location
+    request.session['location'] = 'actualhome'
+    #Acquire username
+    username = request.session['username']
+    methods = ['Get', 'POST']
+
     #Reset temp file
-    tempfile = filesfuncs.cleartemp()
-    template = loader.get_template('start.html')
-    return HttpResponse(template.render())
+    tempfile = filesfuncs.replacetemp(username, {})
+    context = {"username": username}
+    return render(request, 'start.html', context)
+
+#Extract html ready saveslist
+def getcleansaveslist(saveslist):
+    saveslistkeys = saveslist.keys()
+    save = {}
+    for saves in saveslistkeys:
+        if (saves != "Size"):
+            save[saves] = saveslist[saves]
+    return save
+
+#Allows user to select a save file to start playing
+def loadsaves(request):
+    methods = ['Get']
+    username = request.session['username']
+    saveslist = filesfuncs.getsaveslist(username)
+    save = {}
+    save = getcleansaveslist(saveslist)
+    size = saveslist["Size"]
+
+    return render(request, 'loadsaves.html', {"saves": save, "size": size})
+
+#Allows user to type in username to create a new save. Determines if username is entered and reports success
+@csrf_protect
+def createsave(request):
+    methods = ['Get', 'POST']
+    username = request.session['username']
+    saveslist = filesfuncs.getfiltersaves(username, "unused")
+    size = saveslist["Size"]
+    unusedsave = {}
+    unusedsave = getcleansaveslist(saveslist)
+    
+    if request.method == 'POST':
+        savename = request.POST.get("savename")
+        error = filesfuncs.createnewsave(username, savename)
+        saveslist = filesfuncs.getfiltersaves(username, "unused")
+        unusedsave = getcleansaveslist(saveslist)
+        size = saveslist["Size"]
+
+    return render(request, 'createsave.html', {"saves": unusedsave, "username": username, "size": size})
+
+#Provides menu for deleting saves
+@csrf_protect
+def deletesave(request):
+    methods = ['Get', 'POST']
+    username = request.session['username']
+    saveslist = filesfuncs.getfiltersaves(username, "used")
+    size = saveslist["Size"]
+    usedsave = {}
+    usedsave = getcleansaveslist(saveslist)
+
+    if request.method == 'POST':
+        savename = request.POST.get("savename")
+        error = filesfuncs.deleteoldsave(username, savename)
+        saveslist = filesfuncs.getfiltersaves(username, "used")
+        usedsave = getcleansaveslist(saveslist)
+        size = saveslist["Size"]
+        
+    return render(request, 'deletesave.html', {"saves": usedsave, "username": username, "size": size})
 
 #Tutorial-> Displays pages for tutorial to explain parts of the website
 @csrf_protect
@@ -133,13 +211,7 @@ def tutorial(request):
     previouspage = 0
     nextpage = 2
 
-    
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    if (len(tempcontents) > 0):
-        tutorialexit = tempcontents["Contents"]["Tutorialsite"]
-        #tutorialexit = getview(tempcontents["Contents"]["Tutorialsite"])
-    else:
-        tutorialexit = "actualhome"
+    tutorialexit = "promptaccount"        
     
     #Tutorial contains a set of pages. Page items represents the contents of these pages. Each page contains a set of <title, text> pairs
     newcontents = filesfuncs.getfile("tutorial", r'tutorial file/')
@@ -147,7 +219,7 @@ def tutorial(request):
     pageitems = newcontents[str(page)] 
 
     if request.method == 'POST':
-        
+        tutorialexit = request.session['location']
         #Acquire page numbers
         page = int(request.POST.get("newpage"))
         previouspage = page - 1
@@ -165,34 +237,35 @@ def tutorial(request):
     }
     return render(request, 'tutorial.html', context)
 
-#Set temp file
-def inittemp(savename): 
-    saveslist = filesfuncs.acquirefiles()
-    newcontents = filesfuncs.getfile(savename, r'save files/')
-    tempfile = filesfuncs.updatetemp(savename, newcontents)
+#Set temp file to savefile contents
+def inittemp(savename, username): 
+    savefolder = filesfuncs.getfolderfromuser("save files", username)
+    savecontents = filesfuncs.getfile(savename, savefolder)
+    filesfuncs.settemp(username, savename, savecontents)
     pass  
 
 #Allows you to access your saves
 @csrf_protect
 def gamehome(request):
-
+    request.session['location'] = 'gamehome'
+    username = request.session['username']
     #Initialize temp file first when we first go to gamehome
     tempinit = "False"
     #Use post to save if save button is pressed
     tempsave = "False"
+
+    methods = ['GET', 'POST']
     if request.method == 'POST':
         tempinit = request.POST.get("tempinit")
         if (tempinit == "True"):
             savename = request.POST.get("savename")
-            inittemp(savename)
+            inittemp(savename, username)
         else:
             tempsave = request.POST.get("savetemp")
             if(tempsave == "True"):
-                savetemp()
+                savetemp(username)
 
-
-
-    panel = filesfuncs.panelitems()
+    panel = filesfuncs.getpanelitems(username)
     context = {
         "username": panel["Username"], 
         "level": panel["Level"], 
@@ -200,132 +273,56 @@ def gamehome(request):
         "jewels": panel["Jewels"], 
         "realmoney": panel["Real Money Spent"]
     } 
-    filesfuncs.updatetutorial("gamehome")
-    methods = ['GET', 'POST']
-
+    
     return render(request, 'gamehome.html', context)
 
 #Update current save to temp contents
-def savetemp():
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    savedfile = filesfuncs.updatesave(tempcontents)
+def savetemp(username):
+    savename = filesfuncs.gettempsavename(username)
+    savedfile = filesfuncs.savetofile(username, savename)
     pass
 
-def maketransaction(item, operation, amount):
-    success = True
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    savename = tempcontents["Save Name"]
-
-    if (item != "Real Money Spent" and operation != "*"):
-        amount = int(amount)
-    else:
-        amount = round(float(amount), 2)
-
-    match operation:
-        case "+":
-            tempcontents["Contents"][item] = tempcontents["Contents"][item] + amount
-        case "-":
-            if (checktransaction(item, amount)):
-                tempcontents["Contents"][item] = tempcontents["Contents"][item] - amount 
-            else:
-                success = False
-        case "*":
-            if (item != "Real Money Spent"):
-                tempcontents["Contents"][item] = int(float(tempcontents["Contents"][item]) * amount)
-            else:
-                tempcontents["Contents"][item] = round(float(tempcontents["Contents"][item]) * amount, 2)
-        case _:
-            tempcontents["Contents"][item] = amount
-
-    tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
-
-    return success
-
-def checktransaction(currency, amount):
-    success = False
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    
-    if (tempcontents["Contents"][currency] - amount >= 0):
-        success = True
-    return success
-
-#Allows user to select a save file to start playing
-def loadsaves(request):
-    methods = ['Get']
-    saveslistkeys = filesfuncs.acquirefiles().keys()
-    savenames = []
-    for saves in saveslistkeys:
-        savenames.append(saves[:-5])
-    savenames.sort()
-    return render(request, 'loadsaves.html', {"saves": savenames})
-
-#Allows user to type in username to create a new save. Determines if username is entered and reports success
-@csrf_protect
-def createsave(request):
-    methods = ['Get', 'POST']
-    saveslist = filesfuncs.acquirefiles()
-    error = False
-    create = False
-    user = ""
-    if request.method == 'POST':
-        user = request.POST.get("Username")
-        valid = filesfuncs.userexists(saveslist, user)
-        if (valid == True):
-            create = True
-            saveslist = filesfuncs.makenewfile(saveslist, user)
-        else:
-            error = True
-    return render(request, 'createsave.html', {"saves": saveslist, "error": error,  "create": create, "user": user})
-
 #Handles reward giving for releasing characters
-def releasecharacter(serial):
+def releasecharacter(username, serial):
     currency = "Coins"
     amount = 1000
     operation = "+"
     success = True
 
-    rarity = invfuncs.serialgetrarity(serial)
+    rarity = invfuncs.serialgetrarity(username, serial)
     if (rarity < 1):
         amount = 0
-        maketransaction(item, operation, amount)
+        changefuncs.maketransaction(username, item, operation, amount)
         success = False
     elif (rarity < 3):
         amount = amount + random.randint(0, int(amount / 2))
-        maketransaction(currency, operation, amount)
-        temp = removecharacter(serial)
+        changefuncs.maketransaction(username, currency, operation, amount)
+        temp = invfuncs.release(username, serial)
     else:
         currency = "Jewels"
         amount = 10 * rarity
         amount = amount + random.randint(0, int(amount / rarity))
-        maketransaction(currency, operation, amount)
-        temp = removecharacter(serial)
+        changefuncs.maketransaction(username, currency, operation, amount)
+        temp = invfuncs.release(username, serial)
 
     return success
-
-#Handles removing character given serial number
-def removecharacter(serial):
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
-    savename = tempcontents["Save Name"]
-    inventory = tempcontents["Contents"]["Inventory"]
-    if (serial in inventory):
-        del inventory[serial]
-    tempcontents["Contents"]["Inventory"] = inventory
-    tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
-    return tempfile
 
 #Displays the inventory page
 @csrf_protect
 def displayinventory(request):
+    #keep track of webpage location
+    request.session['location'] = 'displayinventory'
+    #Acquire username
+    username = request.session['username']
     methods = ['Get', 'POST']
 
-    inventorychars = filesfuncs.gettempcomponent("Inventory")
+    inventorychars = filesfuncs.gettempitem(username, "Inventory")
     numchars = len(inventorychars)
     transaction = "False"
     success = True
     showselect = False
     tempsave = "False"
     released = False
-    filesfuncs.updatetutorial("displayinventory")
 
     selected = {
         "Name": "",
@@ -347,7 +344,7 @@ def displayinventory(request):
     if request.method == 'POST':
         tempsave = request.POST.get("savetemp")
         if (tempsave == "True"):
-            savetemp()
+            savetemp(username)
             if (numchars > 0):
                 showselect = True
                 #Display character that was selected before save
@@ -377,8 +374,8 @@ def displayinventory(request):
             serial = request.POST.get("Pickserial")
             #Check if serial can be passed off to release character
             if (serial.isnumeric()):
-                released = releasecharacter(serial)
-                inventorychars = filesfuncs.gettempcomponent("Inventory")
+                released = releasecharacter(username, serial)
+                inventorychars = filesfuncs.gettempitem(username, "Inventory")
                 numchars = len(inventorychars)
                 if (numchars > 0):
                     indices = [int(nums) for nums in inventorychars.keys()]
@@ -426,10 +423,10 @@ def displayinventory(request):
                 transaction = request.POST.get("transaction")
                 if(transaction == "True"):
                     transaction = request.POST.get("transaction")
-                    success = maketransaction("Coins", "-", 10000)
+                    success = changefuncs.maketransaction(username, "Coins", "-", 10000)
                     if (success == True):
-                        invfuncs.increaseinventory()
-    panel = filesfuncs.panelitems()
+                        invfuncs.increaseinventory(username)
+    panel = filesfuncs.getpanelitems(username)
 
     context = {
         "username": panel["Username"], 
@@ -447,24 +444,6 @@ def displayinventory(request):
 
     return render(request, 'inventory.html', context)
 
-#Provides menu for deleting saves
-@csrf_protect
-def deletesave(request):
-    methods = ['Get', 'POST']
-    saveslist = filesfuncs.acquirefiles()
-    savenames = filesfuncs.filessorted(saveslist)
-    
-    delete = False
-    file = ""
-
-    if request.method == 'POST':
-        file = request.POST.get("savefile")
-        delete = True        
-        saveslist = filesfuncs.removeoldfile(saveslist, file)
-        savenames = filesfuncs.filessorted(saveslist)
-        
-    return render(request, 'deletesave.html', {"saves": savenames,  "delete": delete, "file": file})
-
 #Function for processing transaction values from post request
 def processtransactionvalues(request, currency, operation, amount):
     values = []
@@ -478,12 +457,15 @@ def processtransactionvalues(request, currency, operation, amount):
 #Represents a shop that allows you to buy things
 @csrf_protect
 def shop(request):
+    #keep track of webpage location
+    request.session['location'] = 'shop'
+    #Acquire username
+    username = request.session['username']
     methods = ['Get', 'POST']
 
-    inventorychars = filesfuncs.gettempcomponent("Inventory")
+    inventorychars = filesfuncs.gettempitem(username, "Inventory")
     numchars = len(inventorychars)
     transaction = "False"
-    filesfuncs.updatetutorial("shop")
 
     #Default that represents no transaction that has taken place. -1 is failure and 1 is success
     success = 0
@@ -510,12 +492,12 @@ def shop(request):
 
         tempsave = request.POST.get("savetemp")
         if (tempsave == "True"):
-            savetemp()
+            savetemp(username)
         else:
             #If we save, we shouldn't be doing a transaction at the same time
             tempsave = request.POST.get("savetemp")
             if (tempsave == "True"):
-                savetemp()
+                savetemp(username)
             #Transaction
             else:    
                 try:
@@ -527,15 +509,15 @@ def shop(request):
                     if (transaction == "True"):
                         print(f"Transaction made!")
                         values = processtransactionvalues(request, "currency1", "operation1", "amount1")
-                        success = invfuncs.intbool(maketransaction(values[0], values[1], values[2]))
+                        success = invfuncs.intbool(changefuncs.maketransaction(username, values[0], values[1], values[2]))
                         if (success == 1):
                             print(f"transaction went through!")
                             values = processtransactionvalues(request, "currency2", "operation2", "amount2")
-                            success = invfuncs.intbool(maketransaction(values[0], values[1], values[2])) 
+                            success = invfuncs.intbool(changefuncs.maketransaction(username, values[0], values[1], values[2])) 
                         else:
                             defaulttab = "Coins"
 
-    panel = filesfuncs.panelitems()
+    panel = filesfuncs.getpanelitems(username)
     context = {
         "defaulttab": defaulttab,
         "username": panel["Username"], 
@@ -555,12 +537,15 @@ def shop(request):
 #Represents the summons area which allows you to summon more characters
 @csrf_protect
 def summon(request):
+    #keep track of webpage location
+    request.session['location'] = 'summon'
+    #Acquire username
+    username = request.session['username']
     methods = ['Get', 'POST']
 
-    inventorychars = filesfuncs.gettempcomponent("Inventory")
+    inventorychars = filesfuncs.gettempitem(username, "Inventory")
     numchars = len(inventorychars)
     transaction = "False"
-    filesfuncs.updatetutorial("summon")
 
     #Default that represents no transaction that has taken place. -1 is failure and 1 is success
     success = 0
@@ -578,7 +563,7 @@ def summon(request):
 
         tempsave = request.POST.get("savetemp")
         if (tempsave == "True"):
-            savetemp()
+            savetemp(username)
         else:
             #Check if transaction value has been set by post request
             try:
@@ -597,31 +582,31 @@ def summon(request):
                         #Check the amount that will be added to the inventory
                         toadd = summoninfo[summontype]["Number of Summons"]
                         #If there is enough space in inventory, proceed with the transaction
-                        if (numchars + toadd <= filesfuncs.gettempcomponent("Inventory Max Size")):
+                        if (numchars + toadd <= filesfuncs.gettempitem(username, "Inventory Max Size")):
                             print(f"transaction = {True}")
                             summonable = True
                             #Perform transaction changes
                             values = processtransactionvalues(request, "currency1", "operation1", "amount1")
                             failedcurrency = values[0].lower()
-                            success = invfuncs.intbool(maketransaction(values[0], values[1], values[2]))
+                            success = invfuncs.intbool(changefuncs.maketransaction(username, values[0], values[1], values[2]))
 
                             if (success == 1):
                                 #If transaction can proceed, start summoning characters
                                 if (toadd == 1):
                                     types = summoninfo[summontype]["Types"]
                                     baserarities = summoninfo[summontype]["Base Rarities"]
-                                    summonlist = invfuncs.summonfor1(types, baserarities)
+                                    summonlist = invfuncs.summonfor1(username, types, baserarities)
                                 else:
                                     types = summoninfo[summontype]["Types"]
                                     baserarities = summoninfo[summontype]["Base Rarities"]
                                     pityrarities = summoninfo[summontype]["Pity Rarity"]
-                                    summonlist = invfuncs.summonfor10(types, baserarities, pityrarities)
+                                    summonlist = invfuncs.summonfor10(username, types, baserarities, pityrarities)
                         else:
                             summonable = False
                     else:
                         summonable = False
 
-    panel = filesfuncs.panelitems()
+    panel = filesfuncs.getpanelitems(username)
     context = {
         "username": panel["Username"], 
         "level": panel["Level"], 
@@ -652,18 +637,21 @@ def summonresults(request, context, summonlist):
 #Represents a shop that allows you to buy things
 @csrf_protect
 def roster(request):
+    #keep track of webpage location
+    request.session['location'] = 'roster'
+    #Acquire username
+    username = request.session['username']
     methods = ['Get', 'POST']
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    tempcontents = filesfuncs.gettemp(username)
     #Get roster from tempfile
     temproster = tempcontents["Contents"]["Chracter Collection"]
     #Get info on whether characters can be claimed
-    claimable = len(invfuncs.hasrewards())
-    print(f"claimable: {claimable}")
+    claimable = len(invfuncs.hasrewards(username))
+    
     #Flag for when someone clicks on a character panel in the roster
     claimsingle = "False"
     #Flag for when someone clicks on claim all rewards
     claimall = "False"
-    filesfuncs.updatetutorial("roster")
 
     #Default that represents no transaction that has taken place. -1 is failure and 1 is success
     success = 0
@@ -686,63 +674,51 @@ def roster(request):
             defaulttab = "Fire"
         
         tempsave = request.POST.get("savetemp")
+        #save temp file
         if (tempsave == "True"):
-            savetemp()
+            savetemp(username)
         else:
-
             #Check if someone clicked on a character panel in the roster
-            try:
-                claimsingle = request.POST.get("claimsingle")
-                print(f"claimsingle is {claimsingle}")
-            except: 
-                print("Except triggered")
-                success = 0
-                defaulttab = "Fire"
-
+            claimsingle = request.POST.get("claimsingle")
             #Otherwise process claiming for one character
-            else:
-                if (claimsingle == "True"):
-                    defaulttab = "Fire"
-                    try:
-                        charname = request.POST.get("charname")
-                    except: 
-                        success = 0
+            if (claimsingle != None and claimsingle == "True"):
+                defaulttab = "Fire"
+                charname = request.POST.get("charname")
+                if (charname != None):
+                    typeandrarity = invfuncs.gettypeandrarity(charname)
+                    typing = typeandrarity["Type"]
+                    rarity = typeandrarity["Rarity"]
+                    acquired = invfuncs.getrostercharacterstatus(username, typing, rarity, charname, "Acquired")
+                    canclaim = invfuncs.getrostercharacterstatus(username, typing, rarity, charname, "Claimed")
+                    #Check if character has been acquired and can be claimed
+                    if (acquired, canclaim):
+                        #Retrieve jewel reward for given character
+                        amount = invfuncs.newcharacterrewardamount(rarity)
+                        #Update roster in tempfile
+                        invfuncs.updateroster(username, typing, rarity, charname, "Claimed")
+                        success = invfuncs.intbool(changefuncs.maketransaction(username, "Jewels", "+", amount))
                     else:
-                        typeandrarity = invfuncs.gettypeandrarity(charname)
-                        typing = typeandrarity["Type"]
-                        rarity = typeandrarity["Rarity"]
-                        acquired = invfuncs.getrostercharacterstatus(typing, rarity, charname, "Acquired")
-                        canclaim = invfuncs.getrostercharacterstatus(typing, rarity, charname, "Claimed")
-                        #Check if character has been acquired and can be claimed
-                        if (acquired, canclaim):
-                            #Retrieve jewel reward for given character
-                            amount = invfuncs.newcharacterrewardamount(rarity)
-                            #Update roster in tempfile
-                            invfuncs.updateroster(typing, rarity, charname, "Claimed")
-                            success = invfuncs.intbool(maketransaction("Jewels", "+", amount))
-                        else:
-                            defaulttab = "Fire"
-                else:
-                    #Check if someone clicked on claim all rewards
-                    try: 
-                        claimall = request.POST.get("claimall")
-                    except:
-                        success = 0
                         defaulttab = "Fire"
-                    else:
-                        print("Can claim all")
-                        if (claimall == "True"):
-                            #Retrieve jewel reward for given character. Function also updates roster in tempfile
-                            amount = invfuncs.updaterosterandcalcrewards()
-                            success = invfuncs.intbool(maketransaction("Jewels", "+", amount))
-                        else: 
-                            defaulttab = "Fire"
+                else: 
+                    success = 0   
+                    defaulttab = "Fire" 
+            else:
+                #Check if someone clicked on claim all rewards
+                claimall = request.POST.get("claimall")
+                if (claimall != None and claimall == "True"):
+                    #Retrieve jewel reward for given character. Function also updates roster in tempfile
+                        amount = invfuncs.updaterosterandcalcrewards(username)
+                        success = invfuncs.intbool(changefuncs.maketransaction(username, "Jewels", "+", amount))
+                else:
+                    success = 0
+                    defaulttab = "Fire"
+                        
 
     #Reinitialize to reflect changes
-    panel = filesfuncs.panelitems()
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    panel = filesfuncs.getpanelitems(username)
+    tempcontents = filesfuncs.gettemp(username)
     temproster = tempcontents["Contents"]["Chracter Collection"]
-    claimable = len(invfuncs.hasrewards())
+    claimable = len(invfuncs.hasrewards(username))
 
     context = {
         "defaulttab": defaulttab,

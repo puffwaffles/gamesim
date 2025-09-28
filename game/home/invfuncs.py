@@ -43,7 +43,7 @@ def intbool(value):
         return -1
 
 #Pick random char based on type probabilities and rarity probabilities (in terms of decimals from 0 to 1)
-def pickchar(types, raritieslist):
+def pickchar(username, types, raritieslist):
     charname = ""
     orgroster = filesfuncs.getfile("groupedroster", r'data/')
     typing = ""
@@ -68,14 +68,14 @@ def pickchar(types, raritieslist):
         charname = availablelist[randindex]
 
     #For newly acquired characters, update the roster
-    isnew = getrostercharacterstatus(typing, rarity, charname, "Acquired")
+    isnew = getrostercharacterstatus(username, typing, rarity, charname, "Acquired")
     if (isnew == False):
-        updateroster(typing, rarity, charname, "Acquired")
+        updateroster(username, typing, rarity, charname, "Acquired")
 
     return charname
 
 #Picks from a given list
-def pickcharfromlist(types, raritieslist, speciallist):
+def pickcharfromlist(username, types, raritieslist, speciallist):
     charname = ""
     orgroster = filesfuncs.getfile("groupedroster", r'data/')
     typing = ""
@@ -103,79 +103,36 @@ def pickcharfromlist(types, raritieslist, speciallist):
         randindex = random.randint(0, len(availablelist) - 1)
         charname = availablelist[randindex]
 
+    #For newly acquired characters, update the roster
+    isnew = getrostercharacterstatus(username, typing, rarity, charname, "Acquired")
+    if (isnew == False):
+        updateroster(username, typing, rarity, charname, "Acquired")
+
     return charname
 
-#Just testing for basic summon from 1-3
-def testpicker():
-    types = {
-        "Fire": (1.0 / 3.0),
-        "Water": (1.0 / 3.0),
-        "Wood": (1.0 / 3.0)
-    }
-    rarities = {
-        "1": 0.6,
-        "2": 0.3,
-        "3": 0.1
-    }
-    charname = pickchar(types, rarities)
-    if (charname == ""):
-        print(f"No such character exists for given type and rarity\n")
-    else:
-        print("\n")
-        print(f"Summoned character {charname} \n")
-    pass
-
-#Test batch summon
-def summonbatch1to3():
-    types = {
-        "Fire": (1.0 / 3.0),
-        "Water": (1.0 / 3.0),
-        "Wood": (1.0 / 3.0)
-    }
-    baserarities = {
-        "1": 0.6,
-        "2": 0.3,
-        "3": 0.1
-    }
-    pityrarity = {
-        "2": 0.8,
-        "1": 0.2
-    }
-    pity = random.randint(1, 10)
-    print("\n")
-    for i in range(1, 10):    
-        if (i == pity):
-            charname = pickchar(types, pityrarity)
-            #print(f"Pity character summoned {charname}\n")
-        else:
-            charname = pickchar(types, baserarities)
-            #print(f"Summoned character {charname} \n")
-    pass
-
-
 #Adds 10 characters to inventory
-def summonfor10(types, baserarities, pityrarity):
+def summonfor10(username, types, baserarities, pityrarity):
     roster = filesfuncs.getfile("roster", r'data/')
     pity = random.randint(1, 10)
     summoned = []
 
     for i in range(1, 11):    
         if (i == pity):
-            charname = pickchar(types, pityrarity)
-            updatetempinv(charname)
+            charname = pickchar(username, types, pityrarity)
+            updatetempinv(username, charname)
             summoned.append(roster[charname])
         else:
-            charname = pickchar(types, baserarities)
-            updatetempinv(charname)
+            charname = pickchar(username, types, baserarities)
+            updatetempinv(username, charname)
             summoned.append(roster[charname])
     return summoned
 
 #Adds 1 character to inventory
-def summonfor1(types, baserarities):
+def summonfor1(username, types, baserarities):
     roster = filesfuncs.getfile("roster", r'data/')
     summoned = []
-    charname = pickchar(types, baserarities)
-    updatetempinv(charname)
+    charname = pickchar(username, types, baserarities)
+    updatetempinv(username, charname)
     summoned.append(roster[charname])
 
     return summoned
@@ -189,60 +146,60 @@ def buildchar(charname):
     return charcontents
 
 #Update inventory with new character. 
-def updatetempinv(charname):
+def updatetempinv(username, charname):
     success = False
-    numchars = len(filesfuncs.gettempcomponent("Inventory"))
-    maxsize = filesfuncs.gettempcomponent("Inventory Max Size")
+    numchars = len(filesfuncs.gettempitem(username, "Inventory"))
+    maxsize = filesfuncs.gettempitem(username, "Inventory Max Size")
     
     if (numchars < maxsize):
-        tempcontents = filesfuncs.getfile("temp", r'temp file/')
+        tempcontents = filesfuncs.gettemp(username)
         #Get character info and serial number
         charinfo = buildchar(charname)
-        charserial = filesfuncs.gettempcomponent("Serial Number")
+        charserial = filesfuncs.gettempitem(username, "Serial Number")
         #Add character entry to temp contents 
         tempcontents["Contents"]["Inventory"][charserial] = charinfo
         #Increment serial number
         tempcontents["Contents"]["Serial Number"] = charserial + 1
         #Update temp file with new temp contents
         tempsavename = tempcontents["Save Name"]
-        newtemp = filesfuncs.updatetemp(tempsavename, tempcontents["Contents"]) 
+        newtemp = filesfuncs.replacetemp(username, tempcontents) 
         success = True
         
     return success
 
 #Returns rarity given character serial number
-def serialgetrarity(serial):
+def serialgetrarity(username, serial):
     rarity = 0
-    numchars = len(filesfuncs.gettempcomponent("Inventory"))
+    numchars = len(filesfuncs.gettempitem(username, "Inventory"))
     if (numchars > 0 and serial.isnumeric()):
-        tempcontents = filesfuncs.getfile("temp", r'temp file/')
+        tempcontents = filesfuncs.gettemp(username)
         if (serial in tempcontents["Contents"]["Inventory"]):
             rarity = tempcontents["Contents"]["Inventory"][serial]["Rarity"]
     return rarity
 
 
 #Removes character given character serial number
-def release(serial):
+def release(username, serial):
     success = False
-    numchars = len(filesfuncs.gettempcomponent("Inventory"))
+    numchars = len(filesfuncs.gettempitem(username, "Inventory"))
+    tempcontents = filesfuncs.gettemp(username)
     
-    if (numchars > 0):
-        tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    if (numchars > 0 and serial in tempcontents["Contents"]["Inventory"].keys()):
         #Remove character with given serial number from temp dictionary
         del tempcontents["Contents"]["Inventory"][serial]
         #Update temp file with new temp contents
         tempsavename = tempcontents["Save Name"]
-        newtemp = filesfuncs.updatetemp(tempsavename, tempcontents["Contents"]) 
+        newtemp = filesfuncs.replacetemp(username, tempcontents) 
         success = True
 
     return success
 
 #Increases current inventory size
-def increaseinventory():
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+def increaseinventory(username):
+    tempcontents = filesfuncs.gettemp(username)
     tempcontents["Contents"]["Inventory Max Size"] += 10
     tempsavename = tempcontents["Save Name"]
-    newtemp = filesfuncs.updatetemp(tempsavename, tempcontents["Contents"]) 
+    newtemp = filesfuncs.replacetemp(username, tempcontents)
 
     pass
 
@@ -285,20 +242,20 @@ def gettypeandrarity(charname):
     return typeandrarity
 
 #Finds out if character has been newly aquired (status = "Acquired") or had its rewards claimed (status = "Claimed")
-def getrostercharacterstatus(types, rarity, charname, status):
+def getrostercharacterstatus(username, types, rarity, charname, status):
     isstatus = False
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    tempcontents = filesfuncs.gettemp(username)
     orgroster = tempcontents["Contents"]["Chracter Collection"]
     if (charname in orgroster[types][str(rarity)].keys()):
         isstatus = orgroster[types][rarity][charname][status] 
     return isstatus
 
 #Updates roster when new char is added to inventory. Only called if there is actually a new character
-def updateroster(types, rarity, charname, status):
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+def updateroster(username, types, rarity, charname, status):
+    tempcontents = filesfuncs.gettemp(username)
     savename = tempcontents["Save Name"]
     tempcontents["Contents"]["Chracter Collection"][types][str(rarity)][charname][status] = True
-    tempfile = filesfuncs.updatetemp(savename, tempcontents["Contents"])
+    tempfile = filesfuncs.replacetemp(username, tempcontents)
 
     pass
 
@@ -321,32 +278,32 @@ def newcharacterrewardamount(rarity):
     return amount
 
 #Updates each characters whose rewards have not yet been claimed
-def updaterosterandcalcrewards():
+def updaterosterandcalcrewards(username):
     totalamount = 0
-    claimable = hasrewards()
+    claimable = hasrewards(username)
     #Iterate through characters to find ones without claimed rewards. Calculate reward amount and update claimed reward status
     for characters in claimable:
         #claimable tuples are character name, type, rarity
-        if (getrostercharacterstatus(characters[1], characters[2], characters[0], "Claimed") == False):
+        if (getrostercharacterstatus(username, characters[1], characters[2], characters[0], "Claimed") == False):
             print(f"Can claim {characters[0]}")
             totalamount += newcharacterrewardamount(characters[2])
             #Update temp file
-            updateroster(characters[1], characters[2], characters[0], "Claimed")
+            updateroster(username, characters[1], characters[2], characters[0], "Claimed")
 
     return totalamount
 
 #Checks if there are any rewards to claim and returns a list of characters whose rewards can be claimed
-def hasrewards():
+def hasrewards(username):
     claimable = []
-    tempcontents = filesfuncs.getfile("temp", r'temp file/')
+    tempcontents = filesfuncs.gettemp(username)
     temproster = tempcontents["Contents"]["Chracter Collection"]
 
     for types in temproster.keys():
         for i in range(1, 6):
             for charname in temproster[types][str(i)].keys():
                 charinfo = [charname, types, str(i)]
-                aquired = getrostercharacterstatus(types, str(i), charname, "Acquired")
-                claims = getrostercharacterstatus(types, str(i), charname, "Claimed")
+                aquired = getrostercharacterstatus(username, types, str(i), charname, "Acquired")
+                claims = getrostercharacterstatus(username, types, str(i), charname, "Claimed")
                 if (aquired == True and claims == False):
                     claimable.append(charinfo)
     print(len(claimable))
@@ -355,5 +312,3 @@ def hasrewards():
 
 
 #organizeroster()
-#testpicker()
-#summonbatch1to3()

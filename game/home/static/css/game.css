@@ -54,15 +54,15 @@ button.bar {
 	text-align: center;
 	font-size: 10pt;
     background-color: #3399ff;
-    width: 100%;
+    width: 80%;
     padding: 30px;
     border-radius: 15px; 
     text-align: center;
+    margin-top: 10px;
 }
 
 .homemenu {
     width: 80%;
-    background-color: purple;
     float: right;
 }
 
@@ -72,8 +72,9 @@ button.bar {
 	text-decoration: none;
 	text-align: center;
 	font-size: 10pt;
-    width: 50%;
-    height: 50%;
+    width: 40%;
+    height: 40%;
+    margin: 10px;
     padding: 30px;
     border-radius: 15px; 
 }
@@ -202,4 +203,9 @@ button.bar {
 
 .rostercharacters:hover:enabled, .claimall:hover:enabled {
     cursor: pointer;
+}
+
+.rostercharacters:disabled, .claimall:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }

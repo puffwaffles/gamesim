@@ -25,11 +25,15 @@ body {
     margin-bottom: 10px;
 }
 
-.menu_button:hover, .menu_button_side_by_side:hover, .menu_button_bott_left:hover, .menu_button_bott_right:hover {
+.menu_button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.menu_button:enabled:hover, .menu_button_side_by_side:hover, .menu_button_bott_left:hover, .menu_button_bott_right:hover {
     background-color: #0033cc;
     cursor: pointer;
 }
-
 
 .menu_button_side_by_side, .menu_button_bott_left {
     float: left;
@@ -52,6 +56,10 @@ body {
     width: 50%;
     overflow: hidden;
     padding: 15px;
+}
+
+.textcontent {
+    overflow: scroll;
 }
 
 .middle {
