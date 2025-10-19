@@ -1,7 +1,7 @@
 A simple website that simulates a gacha game
 
 Current Features:
-* Allows for different user accounts with a maximum of 5 save files allocated for each user. Users can sign up and login to their own accounts. Users can also logout and delete their accounts
+* Allows for different user accounts with a maximum of 5 save files allocated for each account. Users can sign up and login to their own accounts. Users can also logout and delete their accounts
 * An information guide that appears before a user starts and can be skipped. This guide can be reaccessed after the user logs in.
 * A save button that allows users to save their progress at any point to their current save file.
 * An inventory system to store characters. Characters can be released for rewards and inventory space can be increased to accomodate more characters.
@@ -21,9 +21,10 @@ Features/Things I would like to add later (but might not be added):
 * A leveling and item equipment system to increase the strength of characters.
 * A way to pick which save file to save to. Currently you can only save to the save file you are currently on.
 * An autosave function that can be turned on/off. This will allow users to let the system save for them instead of having to manually save with the save button. Users can choose to autosave after each action or save after logging out. 
+* A way for users to change their account password 
 * Packages for summon vouchers that can be bought from the shop.
 * A login bonus system.
-* An inbox system.
+* An inbox system. If users exceed their character inventory capacity, excess characters can be placed in inventory.
 * More characters per each type and rarity
 * A way for users to mark which characters they would like to avoid being released (or sacrificed if implemented) and a way to unmark them.
 * A special summon that allows users to pick a certain number of characters to be used to acquire special/chosen characters.

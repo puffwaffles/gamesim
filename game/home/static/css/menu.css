@@ -59,7 +59,8 @@ body {
 }
 
 .textcontent {
-    overflow: scroll;
+    height: 400px;
+    overflow: auto;
 }
 
 .middle {

@@ -1,0 +1,295 @@
+{
+  "Username": "hello",
+  "Level": 1,
+  "Coins": 613660,
+  "Jewels": 255,
+  "Real Money Spent": 0,
+  "Inventory": {
+    "1": {
+      "Picture": "images/wood/forest_kit.jpg",
+      "Type": "Wood",
+      "Rarity": 2,
+      "Name": "Flower Kit"
+    },
+    "2": {
+      "Picture": "images/wood/grass_spore.jpg",
+      "Type": "Wood",
+      "Rarity": 1,
+      "Name": "Grass Spore"
+    },
+    "3": {
+      "Picture": "images/fire/flame_salamander.jpg",
+      "Type": "Fire",
+      "Rarity": 2,
+      "Name": "Flame Salamander"
+    },
+    "4": {
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3,
+      "Name": "Mermaid"
+    },
+    "5": {
+      "Picture": "images/wood/forest_kit.jpg",
+      "Type": "Wood",
+      "Rarity": 2,
+      "Name": "Flower Kit"
+    },
+    "6": {
+      "Picture": "images/wood/grass_spore.jpg",
+      "Type": "Wood",
+      "Rarity": 1,
+      "Name": "Grass Spore"
+    },
+    "8": {
+      "Picture": "images/fire/flame_whisp.jpg",
+      "Type": "Fire",
+      "Rarity": 1,
+      "Name": "Flame Whisp"
+    },
+    "10": {
+      "Picture": "images/water/arrow_fish.jpg",
+      "Type": "Water",
+      "Rarity": 2,
+      "Name": "Arrow Fish"
+    },
+    "12": {
+      "Picture": "images/fire/fire_spirit.jpg",
+      "Type": "Fire",
+      "Rarity": 3,
+      "Name": "Fire Spirit"
+    },
+    "13": {
+      "Picture": "images/wood/flower_sprite.jpg",
+      "Type": "Wood",
+      "Rarity": 3,
+      "Name": "Flower Sprite"
+    },
+    "14": {
+      "Picture": "images/fire/flame_salamander.jpg",
+      "Type": "Fire",
+      "Rarity": 2,
+      "Name": "Flame Salamander"
+    },
+    "15": {
+      "Picture": "images/fire/flame_whisp.jpg",
+      "Type": "Fire",
+      "Rarity": 1,
+      "Name": "Flame Whisp"
+    },
+    "16": {
+      "Picture": "images/fire/flame_salamander.jpg",
+      "Type": "Fire",
+      "Rarity": 2,
+      "Name": "Flame Salamander"
+    },
+    "17": {
+      "Picture": "images/fire/flame_whisp.jpg",
+      "Type": "Fire",
+      "Rarity": 1,
+      "Name": "Flame Whisp"
+    },
+    "18": {
+      "Picture": "images/wood/flower_sprite.jpg",
+      "Type": "Wood",
+      "Rarity": 3,
+      "Name": "Flower Sprite"
+    },
+    "19": {
+      "Picture": "images/fire/flame_salamander.jpg",
+      "Type": "Fire",
+      "Rarity": 2,
+      "Name": "Flame Salamander"
+    },
+    "20": {
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3,
+      "Name": "Mermaid"
+    },
+    "21": {
+      "Picture": "images/water/water_orb.jpg",
+      "Type": "Water",
+      "Rarity": 1,
+      "Name": "Water Orb"
+    },
+    "22": {
+      "Picture": "images/water/arrow_fish.jpg",
+      "Type": "Water",
+      "Rarity": 2,
+      "Name": "Arrow Fish"
+    },
+    "23": {
+      "Picture": "images/water/arrow_fish.jpg",
+      "Type": "Water",
+      "Rarity": 2,
+      "Name": "Arrow Fish"
+    },
+    "24": {
+      "Picture": "images/water/water_orb.jpg",
+      "Type": "Water",
+      "Rarity": 1,
+      "Name": "Water Orb"
+    },
+    "25": {
+      "Picture": "images/water/water_orb.jpg",
+      "Type": "Water",
+      "Rarity": 1,
+      "Name": "Water Orb"
+    },
+    "26": {
+      "Picture": "images/water/water_orb.jpg",
+      "Type": "Water",
+      "Rarity": 1,
+      "Name": "Water Orb"
+    },
+    "27": {
+      "Picture": "images/water/water_orb.jpg",
+      "Type": "Water",
+      "Rarity": 1,
+      "Name": "Water Orb"
+    },
+    "28": {
+      "Picture": "images/water/mermaid.jpg",
+      "Type": "Water",
+      "Rarity": 3,
+      "Name": "Mermaid"
+    },
+    "29": {
+      "Picture": "images/fire/flame_whisp.jpg",
+      "Type": "Fire",
+      "Rarity": 1,
+      "Name": "Flame Whisp"
+    },
+    "30": {
+      "Picture": "images/water/arrow_fish.jpg",
+      "Type": "Water",
+      "Rarity": 2,
+      "Name": "Arrow Fish"
+    },
+    "31": {
+      "Picture": "images/wood/grass_spore.jpg",
+      "Type": "Wood",
+      "Rarity": 1,
+      "Name": "Grass Spore"
+    },
+    "32": {
+      "Picture": "images/water/water_orb.jpg",
+      "Type": "Water",
+      "Rarity": 1,
+      "Name": "Water Orb"
+    }
+  },
+  "Inventory Max Size": 30,
+  "Serial Number": 33,
+  "Tutorialsite": "actualhome",
+  "Chracter Collection": {
+    "Fire": {
+      "5": {},
+      "4": {},
+      "3": {
+        "Fire Spirit": {
+          "Picture": "images/fire/fire_spirit.jpg",
+          "Type": "Fire",
+          "Rarity": 3,
+          "Acquired": true,
+          "Claimed": true
+        }
+      },
+      "2": {
+        "Flame Salamander": {
+          "Picture": "images/fire/flame_salamander.jpg",
+          "Type": "Fire",
+          "Rarity": 2,
+          "Acquired": true,
+          "Claimed": true
+        }
+      },
+      "1": {
+        "Flame Whisp": {
+          "Picture": "images/fire/flame_whisp.jpg",
+          "Type": "Fire",
+          "Rarity": 1,
+          "Acquired": true,
+          "Claimed": true
+        }
+      }
+    },
+    "Water": {
+      "5": {},
+      "4": {},
+      "3": {
+        "Mermaid": {
+          "Picture": "images/water/mermaid.jpg",
+          "Type": "Water",
+          "Rarity": 3,
+          "Acquired": true,
+          "Claimed": true
+        }
+      },
+      "2": {
+        "Arrow Fish": {
+          "Picture": "images/water/arrow_fish.jpg",
+          "Type": "Water",
+          "Rarity": 2,
+          "Acquired": true,
+          "Claimed": true
+        }
+      },
+      "1": {
+        "Water Orb": {
+          "Picture": "images/water/water_orb.jpg",
+          "Type": "Water",
+          "Rarity": 1,
+          "Acquired": true,
+          "Claimed": true
+        }
+      }
+    },
+    "Wood": {
+      "5": {},
+      "4": {},
+      "3": {
+        "Flower Sprite": {
+          "Picture": "images/wood/flower_sprite.jpg",
+          "Type": "Wood",
+          "Rarity": 3,
+          "Acquired": true,
+          "Claimed": true
+        }
+      },
+      "2": {
+        "Flower Kit": {
+          "Picture": "images/wood/forest_kit.jpg",
+          "Type": "Wood",
+          "Rarity": 2,
+          "Acquired": true,
+          "Claimed": true
+        }
+      },
+      "1": {
+        "Grass Spore": {
+          "Picture": "images/wood/grass_spore.jpg",
+          "Type": "Wood",
+          "Rarity": 1,
+          "Acquired": true,
+          "Claimed": true
+        }
+      }
+    },
+    "Light": {
+      "5": {},
+      "4": {},
+      "3": {},
+      "2": {},
+      "1": {}
+    },
+    "Dark": {
+      "5": {},
+      "4": {},
+      "3": {},
+      "2": {},
+      "1": {}
+    }
+  }
+}

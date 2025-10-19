@@ -35,6 +35,11 @@
                 {% csrf_token %}
                 <button class = "menu_button_bott_left" type = "submit"><h1>Go Back</h1></button>
             </form>
+            <form action = "{% url 'tutorial' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "newpage" value = "1">
+                <button class = "menu_button_bott_left" type = "submit"><h1>Tutorial</h1></button>
+            </form>
             <form action = "{% url 'signup' %}" method = "GET">
                 {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Sign Up</h1></button>
             </form>

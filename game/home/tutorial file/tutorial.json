@@ -1,5 +1,21 @@
 {
     "1": {
+        "PageTitle": "Accounts",
+        "1": {
+            "Title": "Main Accounts page",
+            "Text": "You will arrive at this menu after skipping/finishing the tutorial page for the first time. From here you will be prompted to either sign up or login to proceed."
+
+        },
+        "2": {
+            "Title": "Sign up",
+            "Text": "Allows you to sign up for a new account. You will be prompted for a new username and password. If you would like to see your password while typing, you can press the eye icon and toggle it on/off to enable/disable passwod visibility. If there is an error with the username/password, you will be prompted to enter them again. Otherwise, a message confirming success will be shown. You can choose to go back to the main accounts page or proceed to login"
+        },
+        "3": {
+            "Title": "Login",
+            "Text": "Allows you to login to your new account. You will be prompted to enter your username and password. If you would like to see your password while typing, you can press the eye icon and toggle it on/off to enable/disable passwod visibility. If there is an error with the username/password, you will be prompted to enter them again. Upon success you will be taken to the main home page"
+        }
+    },
+    "2": {
         "PageTitle": "Main Home",
         "1": {
             "Title": "Load Saves",
@@ -7,14 +23,22 @@
         },
         "2": {
             "Title": "Create Saves",
-            "Text": "This button takes you to the create saves menu which allows you to create a new save. You will be prompted to enter a new username for the save. If you type in a username for an already existing save, you will be prompted again. You can only make a total of 5 saves maximum."
+            "Text": "This button takes you to the create saves menu which allows you to create a new save. You can create a new save file from unused saves by clicking on the save. You have 5 saves at most."
         },
         "3": {
             "Title": "Delete Saves",
-            "Text": "This button takes you to the delete save menu which allows you to delete a given save if you have any. You can select saves by file name using the dropdown."
+            "Text": "This button takes you to the delete save menu which allows you to delete a given save if you have any. You can select saves to delete by clicking on the save."
+        },
+        "4": {
+            "Title": "Logout",
+            "Text": "Allows you to logout of the account you are currently using. You will be taken to the accounts page where you can login in again or create a new account."
+        },
+        "5": {
+            "Title": "Delete Account",
+            "Text": "Allows you to delete your account. You will be logged out and sent back to the accounts page after deleting your account."
         }
     },
-    "2": {
+    "3": {
         "PageTitle": "Game Home",
         "1": {
             "Title": "Inventory",
@@ -33,11 +57,15 @@
             "Text": "This button takes you to the character roster. In the character roster contains all existing characters in the game. These characters are grouped by type and sorted by rarity in descending order. For each character, you can see if you have obtained it or not. When you obtain a new character, you can claim a reward by clicking on the character icon in the roster. You can also claim all rewards by clicking the claim all rewards button at the top. You can only claim rewards once per character."
         }
     },
-    "3": {
+    "4": {
         "PageTitle": "Buttons That Are In Multiple Pages",
         "1": {
             "Title": "Save",
             "Text": "Allows you to save your progress to the currently used save file. If you don't press the save button before exiting back to the main homepage, any changes made will be undone."
+        },
+        "2": {
+            "Title": "Tutorial",
+            "Text": "Allows you to access the relevant tutorial page for the given menu. You can return back by pressing exit tutorial."
         }
     }
 }

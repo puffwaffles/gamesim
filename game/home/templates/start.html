@@ -18,6 +18,11 @@
         <form action = "{% url 'deletesave' %}" method = "GET">
             <button class = "menu_button"><h1>Delete A Save</h1></button>
         </form>
+        <form action = "{% url 'tutorial' %}" method = "POST">
+            {% csrf_token %}
+            <input type = "hidden" name = "newpage" value = "2">
+            <button class = "menu_button" type = "submit"><h1>Tutorial</h1></button>
+        </form>
         <form action = "{% url 'promptaccount' %}" method = "GET">
             <button class = "menu_button"><h1>Logout</h1></button>
         </form>

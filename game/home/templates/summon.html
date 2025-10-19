@@ -24,7 +24,8 @@
             <button class = bar type = "submit" onclick = "saveMessage()"><h4>Save File</h4></button>
             <script src = "{% static 'js/script.js' %}"></script>
         </form>
-        <form action = "{% url 'tutorial' %}" method = "Get">
+        <form action = "{% url 'tutorial' %}" method = "POST">
+            <input type = "hidden" name = "newpage" value = "3">
             {% csrf_token %}<button class = "bar" type = "submit"><h4>Tutorial</h4></button>
         </form>
     </ul>

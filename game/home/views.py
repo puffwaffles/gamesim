@@ -36,14 +36,16 @@ def getview(viewname):
 
 #Shows up first to offer tutorial. More like a pseudo home. See actualhome for the actual home screen
 def home(request):
-    #keep track of webpage location
-    request.session['location'] = 'home'
+    #keep track of webpage location. We always go to prompt account first after exiting the tutorial
+    request.session['location'] = 'promptaccount'
     template = loader.get_template('begin.html')
     return HttpResponse(template.render())
 
 #Prompts user for either login or signup
+@csrf_protect
 def promptaccount(request):
     deleted = "False"
+    request.session['location'] = 'promptaccount'
     if request.method == 'POST':
         deleted = request.POST.get("deleted")
         username = request.POST.get("username")
@@ -52,8 +54,8 @@ def promptaccount(request):
             loginfuncs.deleteuser(username)
     #keep track of webpage location
     request.session['location'] = 'promptaccount'
-    template = loader.get_template('account.html')
-    return HttpResponse(template.render())
+    context = {}
+    return render(request, 'account.html', context)
 
 #Provides signin page
 @csrf_protect

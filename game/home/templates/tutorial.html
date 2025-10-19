@@ -8,44 +8,44 @@
 <body>
     
     <div class = "tutorial_box">
-        <span class = "textcontent">
-        <div class = "middle">
-            <h1>{{pageitems.PageTitle}}</h1>
-        </div>
-        {% for keyparts, parts in pageitems.items %}
-            {% if keyparts != pageitems.PageTitle%}
-            <h2>{{parts.Title}}</h2>
-            <p>{{parts.Text}}</p>
+        <div class = "textcontent">
+            <div class = "middle">
+                <h1>{{pageitems.PageTitle}}</h1>
+            </div>
+            {% for keyparts, parts in pageitems.items %}
+                {% if keyparts != pageitems.PageTitle%}
+                <h2>{{parts.Title}}</h2>
+                <p>{{parts.Text}}</p>
+                {% endif %}
+            {% endfor %}
+            
+            {% if totalpages > page %}
+            <form action = "{% url tutorialexit %}" method = "POST">
+                {% csrf_token %}<button class = "menu_button_bott_left" type = "submit"><h1>Exit Tutorial</h1></button>
+            </form>
+            <form action = "{% url 'tutorial' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "newpage" value = "{{nextpage}}">
+                <button class = "menu_button_bott_right" type = "submit"><h1>Next</h1></button>
+            </form>
             {% endif %}
-        {% endfor %}
-        
-        {% if totalpages > page %}
-         <form action = "{% url tutorialexit %}" method = "GET">
-            {% csrf_token %}<button class = "menu_button_bott_left" type = "submit"><h1>Exit Tutorial</h1></button>
-        </form>
-        <form action = "{% url 'tutorial' %}" method = "POST">
-            {% csrf_token %}
-            <input type = "hidden" name = "newpage" value = "{{nextpage}}">
-            <button class = "menu_button_bott_right" type = "submit"><h1>Next</h1></button>
-        </form>
-        {% endif %}
-        {% if totalpages == page %}
-        <form action = "{% url 'tutorial' %}" method = "POST">
-            {% csrf_token %}
-            <input type = "hidden" name = "newpage" value = "{{previouspage}}">
-            <button class = "menu_button_bott_left" type = "submit"><h1>Back</h1></button>
-        </form>
-        <form action = "{% url tutorialexit %}" method = "GET">
-            {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Exit Tutorial</h1></button>
-        </form>
-        {% elif page > 1 %}
-        <form action = "{% url 'tutorial' %}" method = "POST">
-            {% csrf_token %}
-            <input type = "hidden" name = "newpage" value = "{{previouspage}}">
-            <button class = "menu_button_bott_right" type = "submit"><h1>Back</h1></button>
-        </form>
-        {% endif %}
+            {% if totalpages == page %}
+            <form action = "{% url 'tutorial' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "newpage" value = "{{previouspage}}">
+                <button class = "menu_button_bott_left" type = "submit"><h1>Back</h1></button>
+            </form>
+            <form action = "{% url tutorialexit %}" method = "POST">
+                {% csrf_token %}<button class = "menu_button_bott_right" type = "submit"><h1>Exit Tutorial</h1></button>
+            </form>
+            {% elif page > 1 %}
+            <form action = "{% url 'tutorial' %}" method = "POST">
+                {% csrf_token %}
+                <input type = "hidden" name = "newpage" value = "{{previouspage}}">
+                <button class = "menu_button_bott_right" type = "submit"><h1>Back</h1></button>
+            </form>
+            {% endif %}
+        </div>
     </div>
-    </span>
 </body>
 </html>
