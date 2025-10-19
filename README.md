@@ -30,3 +30,6 @@ Features/Things I would like to add later (but might not be added):
 * A special summon that allows users to pick a certain number of characters to be used to acquire special/chosen characters.
 * Images to depict currency and types. Perhaps visual indicators in summons to indicate when more rare characters have been summoned.
 * Coloring and animations to character sprites. This will take quite a while, so I would like to get the other features put in first.
+
+Demo link:
+* https://youtu.be/OV4dTWck40k
